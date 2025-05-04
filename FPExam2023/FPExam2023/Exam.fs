@@ -42,8 +42,15 @@
         | Or(P, Q) -> eval P || eval Q
     
 (* Question 1.2: Negation and implication *)
-    let negate _ = failwith "not implemented"
-    let implies _ = failwith "not implemented"
+    let rec negate (p : prop) : prop =
+        match p with 
+        | TT -> FF
+        | FF -> TT
+        | And(P, Q) -> Or(negate P,  negate Q)
+        | Or(P, Q) -> And(negate P, negate Q)
+    let implies (p1 : prop) (p2 : prop) : prop =
+        match (p1, p2) with
+        | P, Q -> Or(negate P, Q)
 
 (* Question 1.3: Bounded universal quantifiers *)
     let forall _ = failwith "not implemented"
