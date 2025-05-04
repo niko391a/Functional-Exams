@@ -59,12 +59,17 @@
             | [] -> acc
             | listHead::listTail ->
                 tailHelper f listTail (And(acc, (f listHead)))
-        tailHelper f lst TT
+        tailHelper f lst TT // TT because it's the default value that makes sense in the context of the forall function
 
 (* Question 1.4: Bounded existential quantifiers *)
 
-    let exists _ = failwith "not implemented"
-    
+    let exists (f : 'a -> prop) (lst : 'a list) : prop =
+        match lst with
+        | [] -> FF
+        | sequence ->
+            let results = sequence |> List.map f
+            if List.exists (fun existence -> existence = TT) results then TT else FF
+
 (* Question 1.5: Bounded unique existential quantifiers *)
 
     let existsOne _ = failwith "not implemented"
