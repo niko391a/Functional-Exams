@@ -53,7 +53,13 @@
         | P, Q -> Or(negate P, Q)
 
 (* Question 1.3: Bounded universal quantifiers *)
-    let forall _ = failwith "not implemented"
+    let forall (f : prop) (lst : 'a list) : prop =
+        let rec tailHelper (f : prop) (lst : 'a list) acc : prop =
+            match lst with
+            | [] -> acc
+            | listHead::listTail ->
+                tailHelper f listTail (And(acc, (f listHead)))
+        tailHelper f lst TT
 
 (* Question 1.4: Bounded existential quantifiers *)
 
