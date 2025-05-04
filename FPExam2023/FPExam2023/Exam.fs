@@ -53,8 +53,8 @@
         | P, Q -> Or(negate P, Q)
 
 (* Question 1.3: Bounded universal quantifiers *)
-    let forall (f : prop) (lst : 'a list) : prop =
-        let rec tailHelper (f : prop) (lst : 'a list) acc : prop =
+    let forall (f : 'a -> prop) (lst : 'a list) : prop =
+        let rec tailHelper (f : 'a -> prop) (lst : 'a list) acc : prop =
             match lst with
             | [] -> acc
             | listHead::listTail ->
