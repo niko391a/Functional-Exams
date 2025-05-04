@@ -72,7 +72,13 @@
 
 (* Question 1.5: Bounded unique existential quantifiers *)
 
-    let existsOne _ = failwith "not implemented"
+    let existsOne (f : 'a -> prop) (lst : 'a list) : prop =
+        match lst with
+        | [] -> FF
+        | sequence ->
+            let results = sequence |> List.map f
+            let fileteredEvaluation = List.filter (fun input -> input = TT) results
+            if List.length fileteredEvaluation = 1 then TT else FF
     
 (* 2: Code Comprehension *)
  
