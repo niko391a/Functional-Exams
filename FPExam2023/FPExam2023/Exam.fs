@@ -105,18 +105,28 @@
     
     Q: What are the types of functions foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: foo is recursive ('a list -> 'a list -> 'a list option)
+       bar is recursive ('a list -> 'a list -> 'a list)
+       baz is normal (string -> string -> string)        
 
 
     Q: What do the function foo, bar, and baz do.
        Focus on what they do rather than how they do it.
 
-    A: <Your answer goes here>
+    A: foo checks if the lists are exactly identical in content and order, xs and ys must have the same length
     
+    bar checks if the lists are exactly identical, xs and ys must have the same length
+    if they are not identical then xs will simply be printed out
+    
+    baz consumes identical number but order matters so "1 2 3 4" for "4 3 2 1" will not be consumed, any remainers from a will be outputted.
+    b must also not be longer than a, but a can be longer than b
+
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: foo -> IsCollectionIdentical()
+       bar -> ReturnNonIdenticalCollection()
+       baz -> ConsumeIdenticalValues()
         
     *)
         
