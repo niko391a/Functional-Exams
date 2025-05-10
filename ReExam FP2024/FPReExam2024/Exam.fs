@@ -277,33 +277,42 @@ open System.Xml.Xsl
 (* 4: Letterboxes *)
     
 (* Question 4.1 *)
-    
-    type clicker = {wheelCharacters : char list
-                    wheelPositions : int list}
+    // as lists have a guarenteed order in F# i will use them
+    type clicker = { wheelCharacters : char list
+                     wheelPositions : int list }
     
     let newClicker (wheel : char list) (numWeel : int) : clicker = { wheelCharacters = wheel
                                                                      wheelPositions =  List.init numWeel (fun _ -> 0)}
 
 (* Question 4.2 *)
     
-    let click (cl : clicker) : clicker = failwith "not implemented"
-        // let optionsLength = cl.wheelCharacters.Length
-        // let wheelAmount = cl.wheelPositions.Length
-        // let rec clickHelper currentClicker index =
-        //     if index < 0 then currentClicker // wheel has been reset
-        //     else
-        //         let currentPosition = List.nth currentClicker.wheelPositions index
-        //         if currentPosition < optionsLength - 1 then
-        //             // increment wheel
-        //             let currentClicker = { wheelCharacters = cl.wheelCharacters
-        //                                    wheelPositions = cl.wheelPositions }
-        //         else
-        //             // reset current wheel
-        // clickHelper cl (wheelAmount-1)
+    let click (cl : clicker) : clicker =
+        let wheelOptions = cl.wheelCharacters.Length-1
+        let wheelAmount = cl.wheelPositions.Length-1
         
+        let incrementWheel (index : int) (c : clicker) : clicker = 
+            let newPositions =
+                c.wheelPositions
+                |> List.mapi (fun i x -> if i = index then x + 1 else x)
+            { c with wheelPositions = newPositions }
+            
+        let rec checkIncrements (index : int) (c : clicker) : clicker =
+            if c.wheelPositions[index] > wheelOptions then
+                if index = 0 then { c with wheelPositions = List.init (wheelAmount+1) (fun _ -> 0) }
+                else
+                    let resettedWheel = c.wheelPositions
+                                     |> List.mapi (fun i x -> if i = index then 0 else x)
+                    let newWheel = { c with wheelPositions = resettedWheel }
+                    checkIncrements (index-1) (incrementWheel (index-1) newWheel)
+            else c
+            
+        incrementWheel wheelAmount cl |> checkIncrements wheelAmount
         
-    let read _ = failwith "not implemented"
-
+    let read (cl : clicker ) : string =
+        cl.wheelPositions
+        |> List.map (fun pos -> List.item pos cl.wheelCharacters)
+        |> string 
+            
     
 (* Question 4.3 *)
     type StateMonad<'a> = SM of (clicker -> 'a * clicker)  
