@@ -196,12 +196,12 @@ open System.Xml.Xsl
         | c -> c
     let toCharArray (str : string) = [for c in str -> c]
     let encrypt str =
-        let rec aux = 
+        let rec encryptHelper = 
             function
             | [] -> ""
-            | c :: cs -> string (encryptCharHelper c) + (aux cs)
+            | c :: cs -> string (encryptCharHelper c) + (encryptHelper cs)
             
-        aux (toCharArray str)
+        encryptHelper (toCharArray str)
     
 (* Question 3.2 *)
 
@@ -224,14 +224,55 @@ open System.Xml.Xsl
         tailHelper i str []
     
 (* Question 3.4 *)
+    let asyncEncryptCharHelper =
+        function
+        | c when Char.IsWhiteSpace c -> c 
+        | c when  c >= 'a' && c <= 'z' ->
+            let alphabetStart  = int 'a'
+            let alphabetEnd = int 'z'
+            let charCode = int c
+            let reversedChar = alphabetEnd - (charCode - alphabetStart)
+            char reversedChar
+        | c -> c
+        
+    let asyncEncrypt str =
+        async {
+        let rec encryptHelper = 
+            function
+            | [] -> ""
+            | c::cs -> string (encryptCharHelper c) + (encryptHelper cs)
+        return encryptHelper (toCharArray str) }
+    let asyncToCharArray (str : string) = [for c in str -> c]
     
-    let parEncrypt _ = failwith "not implemented"
+    let parEncrypt str i  =
+        splitAt i str |> List.map asyncEncrypt |> Async.Parallel |> Async.RunSynchronously
+        
     
 (* Question 3.5 *)
         
     open JParsec.TextParser
 
-    let parseEncrypt _ = failwith "not implemented"
+    let parseEncrypt : Parser<string> =
+        let encryptChar c =
+            match c with
+            | c when Char.IsWhiteSpace c -> c 
+            | c when Char.IsLetter c ->
+                let alphabetStart  = int 'a'
+                let alphabetEnd = int 'z'
+                
+                let charCode = int (Char.ToLower c)
+                let reversedChar = alphabetEnd - (charCode - alphabetStart)
+                char reversedChar
+            | _ -> failwith "invalid char encountered"
+                    
+        // Parse a single valid character and encrypt it
+        let charParser = 
+            satisfy (fun c -> Char.IsLetter c || Char.IsWhiteSpace c)
+            |>> encryptChar
+        
+        // Parse many valid characters and join them into a string
+        many charParser 
+        |>> (List.map string >> String.concat "")
 
 (* 4: Letterboxes *)
     
