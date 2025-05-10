@@ -15,3 +15,4 @@ open System;;
 let rect = Rectangle(2., 3.)
 let circ = Circle 4.
 let trig = Triangle(2., 3.)
+let cl = newClicker ['a'; 'b'; 'c'] 2

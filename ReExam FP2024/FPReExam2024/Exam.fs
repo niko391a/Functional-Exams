@@ -278,11 +278,11 @@ open System.Xml.Xsl
     
 (* Question 4.1 *)
     // as lists have a guarenteed order in F# i will use them
-    type clicker = { wheelCharacters : char list
-                     wheelPositions : int list }
+    type clicker = { wheelCharacters : char array
+                     wheelPositions : int array }
     
-    let newClicker (wheel : char list) (numWeel : int) : clicker = { wheelCharacters = wheel
-                                                                     wheelPositions =  List.init numWeel (fun _ -> 0)}
+    let newClicker (wheel : char list) (numWeel : int) : clicker = { wheelCharacters = List.toArray wheel
+                                                                     wheelPositions =  Array.init numWeel (fun _ -> 0)}
 
 (* Question 4.2 *)
     
@@ -293,15 +293,15 @@ open System.Xml.Xsl
         let incrementWheel (index : int) (c : clicker) : clicker = 
             let newPositions =
                 c.wheelPositions
-                |> List.mapi (fun i x -> if i = index then x + 1 else x)
+                |> Array.mapi (fun i x -> if i = index then x + 1 else x)
             { c with wheelPositions = newPositions }
             
         let rec checkIncrements (index : int) (c : clicker) : clicker =
             if c.wheelPositions[index] > wheelOptions then
-                if index = 0 then { c with wheelPositions = List.init (wheelAmount+1) (fun _ -> 0) }
+                if index = 0 then { c with wheelPositions = Array.init (wheelAmount+1) (fun _ -> 0) }
                 else
                     let resettedWheel = c.wheelPositions
-                                     |> List.mapi (fun i x -> if i = index then 0 else x)
+                                     |> Array.mapi (fun i x -> if i = index then 0 else x)
                     let newWheel = { c with wheelPositions = resettedWheel }
                     checkIncrements (index-1) (incrementWheel (index-1) newWheel)
             else c
@@ -310,8 +310,8 @@ open System.Xml.Xsl
         
     let read (cl : clicker ) : string =
         cl.wheelPositions
-        |> List.map (fun pos -> List.item pos cl.wheelCharacters)
-        |> string 
+        |> Array.map (fun pos -> Array.item pos cl.wheelCharacters)
+        |> String 
             
     
 (* Question 4.3 *)
