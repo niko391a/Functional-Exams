@@ -114,7 +114,7 @@ open System.Xml.Xsl
        Focus on what they do rather than how they do it.
 
     A: foo: evaluates the ascii value of the char and changes the calculation of what ascii to return based on if the ascii value is larger than 'w' or less than 'x'
-       If a white space is given it is simply returned
+       If a white space is given it is simply returned. Caesar cipher, it returns a char with the input chars ascii value shifted 3 times down the alphabet.
         
        bar: takes a string and splits the string up into a list of chars.
        If the string is empty an empty char list is returned
@@ -210,14 +210,19 @@ open System.Xml.Xsl
 (* Question 3.3 *)
 
     let splitAt (i : int) (str : string) : string list =
-        let rec tailHelper charList acc  =
-            match charList with
-            | [] -> List.rev acc
-            | list when List.length list < i -> tailHelper [] ((string list) :: acc)
-            | list ->
-                let (chunk, rest) = List.splitAt i list 
-                tailHelper rest ((string chunk) :: acc)
-        tailHelper (List.ofSeq str) []
+        let rec tailHelper (i : int) (str : string) (acc : string list) : string list =
+            match str with
+            | str when str.Length = 0 -> acc
+            | _ ->
+                if str.Length > i then
+                    let currentChunk = str[0..i] + ","
+                    let remainingString = str[i..]
+                    tailHelper i remainingString (acc :: currentChunk)
+                else
+                    let currentChunk = str[..i]
+                    tailHelper i "" 
+                
+        tailHelper i str ""
     
 (* Question 3.4 *)
     
