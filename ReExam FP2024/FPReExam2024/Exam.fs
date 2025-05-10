@@ -330,9 +330,13 @@ open System.Xml.Xsl
       
     let evalSM cl (SM f) = f cl
     
-    let click2 _ = failwith "not implemented"
+    let click2 : StateMonad<unit> =
+        SM (fun currenClicker ->
+            let newClicker = click currenClicker
+            ((), newClicker))
     
-    let read2 _ = failwith "not implemented"
+    let read2 : StateMonad<string> =
+        SM (fun currentClicker -> ((read currentClicker), currentClicker))
 
 (* Question 4.4 *)
     
