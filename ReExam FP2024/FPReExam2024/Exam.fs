@@ -210,17 +210,21 @@ open System.Xml.Xsl
 (* Question 3.3 *)
 
     let splitAt (i : int) (str : string) : string list =
-        let rec tailHelper (i : int) (str : string) (acc : string list) : string list =
+        let rec tailHelper (i : int) (str : string) (acc : string) : string list =
             match str with
-            | str when str.Length = 0 -> acc
+            | str when str.Length = 0 -> acc.Split ',' |> Array.toList
             | _ ->
-                if str.Length > i then
-                    let currentChunk = str[0..i] + ","
+                if i = 1 then
+                    let currentChunk = string str[0] + ","
                     let remainingString = str[i..]
-                    tailHelper i remainingString (acc :: currentChunk)
+                    tailHelper i remainingString (acc + currentChunk)
+                else if str.Length > i then
+                    let currentChunk = str[0..(i-1)] + ","
+                    let remainingString = str[i..]
+                    tailHelper i remainingString (acc + currentChunk)
                 else
                     let currentChunk = str[..i]
-                    tailHelper i "" 
+                    tailHelper i "" (acc + currentChunk)
                 
         tailHelper i str ""
     
