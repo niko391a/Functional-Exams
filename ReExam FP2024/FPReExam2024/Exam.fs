@@ -340,7 +340,17 @@ open System.Xml.Xsl
 
 (* Question 4.4 *)
     
-    let multipleClicks _ = failwith "not implemented"
+    let multipleClicks (x : int) : StateMonad<string list> =
+        let rec clickHelper x (acc : StateMonad<string list>) : StateMonad<string list> =
+            if x > 0 then
+                click2 >>= fun () ->
+                read2 >>= fun currentState ->
+                acc >>= fun currentAcc ->
+                clickHelper (x - 1) (ret (currentAcc @ [currentState]))
+            else
+                acc
+        read2 >>= fun initialState -> clickHelper (x - 1) (ret [initialState])
+            
         
 (* Question 4.5 *)
 
