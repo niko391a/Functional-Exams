@@ -363,4 +363,18 @@ open System.Xml.Xsl
 
     let state = StateBuilder()
     
-    let multipleClicks2 _ = failwith "not implemented"
+    let multipleClicks2 (x : int) : StateMonad<string list> =
+        let rec clickHelper x (acc : StateMonad<string list>) : StateMonad<string list> =
+            if x > 0 then 
+                state {
+                    let! () = click2 
+                    let! updatedWheel = read2
+                    let! currentAcc = acc
+                    return! clickHelper (x-1) (ret (currentAcc @ [updatedWheel]))
+                }
+            else
+                acc
+        state {
+            let! initialState = read2
+            return! clickHelper (x-1) (ret [initialState])
+        }
