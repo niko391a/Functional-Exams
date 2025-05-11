@@ -179,7 +179,13 @@ open System.Xml.Xsl
     
 (* Question 2.5 *)
     
-    let bazTail _ = failwith "not implemented"
+    let bazTail (str : String ) =
+        let rec aux str cont = 
+            match str with
+            | [] -> cont ""
+            | c :: cs -> aux cs (fun acc -> cont (string (foo c) + acc))
+            
+        aux (bar str) id
         
 (* 3: Atbash Ciphers *)
 
