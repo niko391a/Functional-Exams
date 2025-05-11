@@ -191,7 +191,6 @@
 (* 3: Caesar Ciphers *)
 
 (* Question 3.1 *)
-    // use mod 
     let encrypt (text : string) (offset : int) : string =
         let alphabetStart = 'a'
         let alphabetEnd = 'z'
@@ -235,7 +234,33 @@
         decryptHelper plainText encryptedText 0
     
 (* Question 3.4 *)
-    let parEncrypt _ = failwith "not imlpemented"
+    let asyncEncrypt (text : string) (offset : int) =
+        async {
+            let alphabetStart = 'a'
+            let alphabetEnd = 'z'
+            let result =
+                    List.ofSeq text |> List.map (fun ch ->
+                        if ch = ' ' then ch
+                        else
+                            let offsetWithRotations = offset % 26
+                            let lettersLeft = int alphabetEnd - int ch
+                            // if there are not enough letters left we must circle back
+                            if int lettersLeft < offsetWithRotations then
+                                let newOffset = offsetWithRotations - lettersLeft
+                                char (int alphabetStart + (newOffset-1))
+                            else 
+                                char (int ch + offsetWithRotations)
+                    ) |> Array.ofList |> System.String
+            return result
+        }
+        
+    let parEncrypt (text : string) (offset : int) : string =
+        let splitText = text.Split " "
+        splitText
+        |> Array.map (fun word -> asyncEncrypt word offset)
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> String.concat " "
     
 (* Question 3.5 *)
         
