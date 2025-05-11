@@ -265,8 +265,18 @@
 (* Question 3.5 *)
         
     open JParsec.TextParser
-
-    let parseEncrypt _ = failwith "not imlpemented"
+    // > run (parseEncrypt 0) "hello world"
+    // val it: ParserResult<string> =
+    // Success "hello world"
+    let rec parseEncrypt (offset : int) : Parser<string> =
+        // Parse a single valid character and encrypt it
+        let textParser = asciiLetter <|> pchar ' ' |>> string |>> (fun ch -> encrypt ch offset)
+        
+        // Parse many valid characters and join them into a string
+        many textParser
+        |>> (List.map string
+        >> String.concat "")
+        
 
 (* 4: Letterboxes *)
     
