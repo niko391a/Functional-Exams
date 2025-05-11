@@ -54,8 +54,16 @@
         participantHelper trs (Set.empty, Set.empty)
     
     
-    let balanceFold _ = failwith "not implemented"
-    
+    let rec balanceFold (payFolder : 'a -> string -> int -> 'a) (receiveFolder : 'a -> string -> int -> 'a) acc (trs : transactions) : 'a =
+        match trs with
+            | Empty -> acc
+            | Pay (name, amount, trs) ->
+                  let acc' = payFolder acc name amount
+                  balanceFold payFolder receiveFolder acc' trs
+            | Receive (name, amount, trs) ->
+                  let acc' = receiveFolder acc name amount
+                  balanceFold payFolder receiveFolder acc' trs
+                
     let collect _ = failwith "not implemented"
     
     

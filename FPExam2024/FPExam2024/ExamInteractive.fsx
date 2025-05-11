@@ -10,3 +10,9 @@
 #load "JParsec.fs"
 #load "Exam.fs"
 open Exam2024;;
+
+let balance' trs =
+   balanceFold (fun acc _ x -> acc - x)
+                (fun acc _ x -> acc + x)
+                0
+                trs
