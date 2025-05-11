@@ -83,7 +83,7 @@
                     collectHelper trs acc'
                 else
                     let acc' =  acc.Add (name, amount)
-                    collectHelper trs acc
+                    collectHelper trs acc'
         collectHelper trs Map.empty
     
     
@@ -104,42 +104,60 @@
     
     Q: What are the types of functions foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: 
+    foo (char -> int)
+    bar (string -> char list)
+    baz (int list -> int)
 
 
     Q: What do the function foo, bar, and baz do.
        Focus on what they do rather than how they do it.
 
-    A: <Your answer goes here>
+    A: 
+    foo returns the inserted chars ascii value subtracted with the ascii value of '0'
+    bar returns the string split up into a list of chars
+    baz reverses the inputted list and combines them into a single int
     
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A:
+    foo -> shiftAscii48()
+    bar -> stringToCharList()
+    baz -> ReverseAndCombineIntList()
+    
     
     Q: The function foo only behaves reasonably if certain 
        constraint(s) are met on its argument. 
        What is/are these constraints?
         
-    A: <Your answer goes here>
+    A: The input must be a char so no inputs longer than 1, the output also doesn't make sense if a char with ascii value below 0 is inserted, 
+    as this would return a negative number which cannot be translated
     
     Q: The function baz only behaves reasonably if certain 
        constraint(s) are met on its argument. 
        What is/are these constraints?
         
-    A: <Your answer goes here>    *)
+    A: If some or more of the inputted values in the list are above 9 the outputted int will not be reversed perfectly
+    so [10; 20; 30] wont become 302010 but instead 3210
+    *)
     
 (* Question 2.2 *)
     
-    let stringToInt _ = failwith "not implemented"
+    let stringToInt = bar >> List.map foo >> List.rev >> baz
+      
 
 (* Question 2.3 *)
-    
-    let baz2 _ = failwith "not implemented"
+        // let rec baz =
+        // function
+        // | [] -> 0
+        // | x :: xs -> x + 10 * baz xs
+    let baz2 (x : int list) : int = List.foldBack (fun head acc -> head + 10 * acc) x 0
     
 (* Question 2.4 *)
 
     (*
+    let bar (x : string) = [for c in x -> c]
 
     Q: The function `bar` from Question 2.1 is not tail recursive. Demonstrate why.
        To make a compelling argument you should evaluate a function call of the function,
@@ -152,13 +170,24 @@
        that function immediately.
 
     A: <Your answer goes here>
-
+    bar "abc"
+    --> [for c in "abc" -> c]
+    --> 'a' :: [for c in "bc" -> c]
+    --> 'a' :: ('b' :: [for c in "c" -> c])
+    --> 'a' :: ('b' :: ('c' :: [for c in "" -> c]))
+    --> 'a' :: ('b' :: ('c' :: []))
+    --> 'a' :: ('b' :: ['c'])
+    --> 'a' :: ['b'; 'c']
+    --> ['a'; 'b'; 'c']
     *)
     
 (* Question 2.5 *)
-
-    let bazTail _ = failwith "not implemented"
-        
+    let bazTail (input : int list) : int =
+        let rec bazHelper (input : int list) (acc : int) : int = 
+            match input with
+            | [] -> acc
+            | x::xs -> bazHelper xs (x + 10 * acc)
+        bazHelper (List.rev input) 0
 (* 3: Caesar Ciphers *)
 
 (* Question 3.1 *)
