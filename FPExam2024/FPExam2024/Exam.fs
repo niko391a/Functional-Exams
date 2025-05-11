@@ -41,7 +41,17 @@
             | Receive (_, amount, trs) -> balanceHelper trs (acc + amount)
         balanceHelper trs 0
         
-    let participants _ = failwith "not implemented"
+    let participants (trs : transactions) : Set<string> * Set<string> =
+        let rec participantHelper (trs : transactions) (acc : Set<string> * Set<string>) : Set<string> * Set<string> =
+            match trs with
+            | Empty -> acc
+            | Pay (name, _, trs) ->
+                match acc with
+                | (paid, received) -> participantHelper trs (paid.Add name, received)
+            | Receive (name, _, trs) ->
+                match acc with
+                | (paid, received) -> participantHelper trs (paid, received.Add name)
+        participantHelper trs (Set.empty, Set.empty)
     
     
     let balanceFold _ = failwith "not implemented"
