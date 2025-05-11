@@ -191,8 +191,36 @@
 (* 3: Caesar Ciphers *)
 
 (* Question 3.1 *)
-    
-    let encrypt _ = failwith "not imlpemented"
+    // use mod 
+    let encrypt (text : string) (offset : int) : string =
+        let alphabetStart = 'a'
+        let alphabetEnd = 'z'
+        
+        match offset with
+        | x when offset > 26 ->
+            List.ofSeq text |> List.map (fun ch ->
+                if ch = ' ' then ch
+                else
+                    let offsetWithRotations = x % 26
+                    let lettersLeft = int alphabetEnd - int ch
+                    // if there are not enough letters left we must circle back
+                    if int lettersLeft < offsetWithRotations then
+                        let newOffset = offsetWithRotations - lettersLeft
+                        char (int alphabetStart + (newOffset-1))
+                    else 
+                        char (int ch + offsetWithRotations)
+            ) |> Array.ofList |> System.String
+        | x ->
+            List.ofSeq text |> List.map (fun ch ->
+                if ch = ' ' then ch
+                else 
+                    let lettersLeft = int alphabetEnd - int ch
+                    if int lettersLeft < offset then
+                        let newOffset = offset - lettersLeft
+                        char (int alphabetStart + (newOffset-1))
+                    else 
+                        char (int ch + x)
+            ) |> Array.ofList |> System.String
     
 (* Question 3.2 *)
     let decrypt _ = failwith "not imlpemented"
