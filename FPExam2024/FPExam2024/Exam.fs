@@ -209,7 +209,21 @@
         ) |> Array.ofList |> System.String
     
 (* Question 3.2 *)
-    let decrypt _ = failwith "not imlpemented"
+    let decrypt (text : string) (offset : int) : string =
+        let alphabetStart = 'a'
+        let alphabetEnd = 'z'
+        List.ofSeq text |> List.map (fun ch ->
+            if ch = ' ' then ch
+            else
+                let offsetWithRotations = offset % 26
+                let lettersLeft = int ch - int alphabetStart
+                // if there are not enough letters left we must circle back
+                if int lettersLeft < offsetWithRotations then
+                    let newOffset = offsetWithRotations - lettersLeft
+                    char (int alphabetEnd - (newOffset-1))
+                else 
+                    char (int ch - offsetWithRotations)
+        ) |> Array.ofList |> System.String
     
 (* Question 3.3 *)
     let decode _ = failwith "not imlpemented"
