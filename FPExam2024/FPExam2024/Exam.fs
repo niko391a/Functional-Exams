@@ -64,7 +64,27 @@
                   let acc' = receiveFolder acc name amount
                   balanceFold payFolder receiveFolder acc' trs
                 
-    let collect _ = failwith "not implemented"
+    let collect (trs: transactions) : Map<string, int> =
+        let rec collectHelper (trs : transactions) (acc : Map<string, int>) : Map<string, int> =
+            match trs with
+            | Empty -> acc
+            | Pay (name, amount, trs) ->
+                if acc.ContainsKey name then
+                    let currentAmount = acc.Item name 
+                    let acc' =  acc.Add (name, (currentAmount-amount))
+                    collectHelper trs acc'
+                else 
+                    let acc' =  acc.Add (name, -amount)
+                    collectHelper trs acc'
+            | Receive(name, amount, trs) ->
+                if acc.ContainsKey name then
+                    let currentAmount = acc.Item name
+                    let acc' =  acc.Add (name, currentAmount+amount)
+                    collectHelper trs acc'
+                else
+                    let acc' =  acc.Add (name, amount)
+                    collectHelper trs acc
+        collectHelper trs Map.empty
     
     
 (* 2: Code Comprehension *)
