@@ -27,9 +27,19 @@
         | Pay     of string * int * transactions
         | Receive of string * int * transactions
         
-    let balance _ = failwith "not implemented"
+    let rec balance (trs : transactions) : int =
+        match trs with
+        | Empty -> 0
+        | Pay (_, amount, trs) -> (-amount) + balance trs
+        | Receive (_, amount, trs) -> amount + balance trs
         
-    let balanceAcc _ = failwith "not implemented"
+    let balanceAcc (trs : transactions) : int =
+        let rec balanceHelper (trs : transactions) (acc : int) : int =
+            match trs with
+            | Empty -> acc
+            | Pay (_, amount, trs) -> balanceHelper trs (acc - amount)
+            | Receive (_, amount, trs) -> balanceHelper trs (acc + amount)
+        balanceHelper trs 0
         
     let participants _ = failwith "not implemented"
     
