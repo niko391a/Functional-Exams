@@ -226,7 +226,13 @@
         ) |> Array.ofList |> System.String
     
 (* Question 3.3 *)
-    let decode _ = failwith "not imlpemented"
+    let decode (plainText : string) (encryptedText : string) : int option =
+        let rec decryptHelper (plainText : string) (encryptedText : string) offset : int option =
+            match offset with
+            | 26 -> None // possible offsets range from 0-25 so if it hits 26 then there is no offest that would be valid
+            | correctOffset when encrypt plainText correctOffset = encryptedText -> Some correctOffset
+            | _ -> decryptHelper plainText encryptedText (offset+1)
+        decryptHelper plainText encryptedText 0
     
 (* Question 3.4 *)
     let parEncrypt _ = failwith "not imlpemented"
