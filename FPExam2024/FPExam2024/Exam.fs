@@ -323,10 +323,22 @@
     let (>>=) x f = bind f x  
     let (>>>=) x y = x >>= (fun _ -> y)  
       
-    // let evalSM (SM f) = f (empty ())
+    let evalSM (SM f) = f (empty ())
     
-    let post2 _ = failwith "not implemented"
-    let read2 _ = failwith "not implemented"
+    let post2 (sender : string) (message : string) : StateMonad<unit> =
+        SM ( fun currentLetterbox ->
+            let mb = post sender message currentLetterbox
+            Some ((), mb)
+        )
+        
+    let read2 (sender : string) : StateMonad<string> =
+        SM ( fun currentLetterbox ->
+            let letterMessage = read sender currentLetterbox
+            match letterMessage with
+            | None -> None
+            | Some (message, mb) -> Some(message, mb)
+        ) 
+        
 
 (* Question 4.4 *)
 
