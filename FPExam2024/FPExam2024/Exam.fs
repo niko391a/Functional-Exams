@@ -282,15 +282,30 @@
     
 (* Question 4.1 *)
     
-    type letterbox = unit // Replace with your type
+    type letterbox = { letterMap : Map<string, string list> }
     
-    let empty _ = failwith "not imlpemented"
+    let empty () : letterbox = { letterMap = Map.empty }
 
 (* Question 4.2 *)
 
-    let post _ = failwith "not imlpemented"
+    let post (sender : string) (message : string) (mb : letterbox) : letterbox =
+        if mb.letterMap.ContainsKey sender then 
+            let messageList = mb.letterMap.Item sender
+            let newMessagelist = messageList @ [message]
+            let finalMap = mb.letterMap.Add(sender, newMessagelist)
+            { mb with letterMap = finalMap }
+        else
+            let finalMap = mb.letterMap.Add(sender, [message])
+            { mb with letterMap = finalMap }
     
-    let read _ = failwith "not imlpemented"
+    let read (sender : string) (mb : letterbox) : (string * letterbox) option =
+        if mb.letterMap.ContainsKey sender then
+            let messageList = mb.letterMap.Item sender
+            let desiredMessage = messageList[0]
+            let finalList = messageList.Tail
+            let finalMap = mb.letterMap.Add(sender, finalList)
+            Some (desiredMessage , { mb with letterMap = finalMap })
+        else None
 
     
 (* Question 4.3 *)
@@ -308,7 +323,7 @@
     let (>>=) x f = bind f x  
     let (>>>=) x y = x >>= (fun _ -> y)  
       
-    let evalSM (SM f) = f (empty ())
+    // let evalSM (SM f) = f (empty ())
     
     let post2 _ = failwith "not implemented"
     let read2 _ = failwith "not implemented"
