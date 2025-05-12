@@ -356,4 +356,11 @@
         | Read of string
     type log = MType list
     
-    let trace _ = failwith "not implemented"
+    let trace (l : log) : StateMonad<string list> =
+        let rec traceHelper (l : log) (acc: StateMonad<string list>) : StateMonad<string list> =
+            match l with
+            | listHead :: listTail ->
+                match listHead with
+                | Post (sender, message) ->
+                    let! newMb = post sender message
+                | Read (sender) -> 
