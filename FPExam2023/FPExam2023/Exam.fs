@@ -246,7 +246,23 @@
         maxCollatzHelper x 0 0
 
 (* Question 3.4: Collecting by length *)
-    let collect _ = failwith "not implemented"
+    let collect (x : int) (y : int) : Map<int, Set<int>> =
+        let rec collectHelper index (acc : Map<int, Set<int>>) : Map<int, Set<int>> =
+            match index with
+            | index when index > y -> acc
+            | index ->
+                let currentCollatzLength = (collatz index).Length
+                if acc.ContainsKey currentCollatzLength then
+                    let newSet = (acc.Item currentCollatzLength).Add index
+                    let newAcc = acc.Add (currentCollatzLength, newSet)
+                    collectHelper (index+1) newAcc
+                else
+                    
+                    let newAcc = acc.Add (currentCollatzLength, set [index])
+                    collectHelper (index+1) newAcc
+        collectHelper x Map.empty
+                // Add itself to the key with the corresponding length and set the current index as the value for that key
+                
     
 (* Question 3.5: Parallel maximum Collatz sequence *)
 
