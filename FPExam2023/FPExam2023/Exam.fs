@@ -226,7 +226,10 @@
 
 (* Question 3.2: Even and odd Collatz sequence elements *)
 
-    let evenOddCollatz _ = failwith "not implemented"
+    let evenOddCollatz (x : int) : int * int =
+        let fullSeq = collatz x
+        let evenSeq = List.filter (fun y -> y % 2 = 0) fullSeq
+        (evenSeq.Length, (fullSeq.Length - evenSeq.Length))
 
 (* Question 3.3: Maximum length Collatz Sequence *)
   
