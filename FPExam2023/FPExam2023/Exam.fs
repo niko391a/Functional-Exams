@@ -51,11 +51,23 @@
     let implies (p : prop) (q : prop) : prop = Or(negate p, q)
 
 (* Question 1.3: Bounded universal quantifiers *)
-    let forall _ = failwith "not implemented"
+    let forall (f : 'a -> prop) (lst : 'a list) : prop =
+        let rec forallHelper (f : 'a -> prop) (lst : 'a list) (acc : prop) : prop =
+            match lst with
+            | [] -> acc
+            | listHead::listTail ->
+                forallHelper f listTail (And(acc, f listHead))
+        forallHelper f lst TT // TT as this is the base case
+    
 
 (* Question 1.4: Bounded existential quantifiers *)
 
-    let exists _ = failwith "not implemented"
+    let exists (f : 'a -> prop) (lst : 'a list) : prop =
+        match lst with
+        | [] -> FF
+        | lst ->
+            let result = List.map f lst
+            if List.exists (fun existence -> existence = TT) result then TT else FF
     
 (* Question 1.5: Bounded unique existential quantifiers *)
 
