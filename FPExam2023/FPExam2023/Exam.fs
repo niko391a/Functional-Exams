@@ -71,7 +71,13 @@
     
 (* Question 1.5: Bounded unique existential quantifiers *)
 
-    let existsOne _ = failwith "not implemented"
+    let existsOne (f : 'a -> prop) (lst : 'a list) : prop =
+        match lst with
+        | [] -> FF
+        | lst ->
+            let result = List.map f lst
+            let filteredResults = List.filter (fun existence -> existence = TT) result
+            if filteredResults.Length > 1 then FF else TT
     
 (* 2: Code Comprehension *)
  
