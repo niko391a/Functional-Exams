@@ -104,19 +104,31 @@
     
     Q: What are the types of functions foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: 
+    foo has type 'a list -> 'a list -> 'a list option
+    bar has type 'a list -> 'a list -> 'a list
+    baz has type string -> string -> string
 
 
     Q: What do the function foo, bar, and baz do.
        Focus on what they do rather than how they do it.
 
-    A: <Your answer goes here>
+    A: 
+    foo: removes repeated occurrences in a list when comparing two identical lists where the first list is longer than the 2nd
+        if the 2nd list is longer than the 1st then None is returned
+    bar: also removes repeated occurrences in a list when comparing two identical lists where the first list is longer than the 2nd
+        but if the end list is inconsistent instead of returning None it will return the whole 1st list
+    baz: Removes identical parts of the first string when comparing it to the 2nd string if the 2nd string
+        is longer than the 1st then the 1st string is simply returned
     
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
     A: <Your answer goes here>
-        
+    foo would be called: SubtractOrDiscard
+    bar would be called: SubtractOrReturn
+    baz would be called: SubtractStringOrReturn
+    
     *)
         
 
@@ -134,11 +146,15 @@
        what are the types of snippets A, B, and C and what are they -- 
        focus on what they do rather than how they do it.
     
-    A: <Your answer goes here>
+    A: 
+    snippet A: Type string -> char list, it converts the string a, into a list of chars
+    snippet B: Type string -> char list, it converts the string c, into a list of chars
+    snippet C: Type char list -> string -> string, it takes the list of chars and slowly accumulates a string by appending the chars to acc
     
     Q: Explain the use of the `|>`-operator in the baz function.
 
-    A: <Your answer goes here>
+    A: The piping operator is used to insert the result of bar into the List.fold higher order function.
+        It is syntactic sugar as Jesper would call it, as it helps us make the code look cleaner.
 
     *)
 
