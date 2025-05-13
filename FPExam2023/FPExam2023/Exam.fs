@@ -274,17 +274,26 @@
             return maxCollatz x y
         }
     let parallelMaxCollatz (x : int) (y : int) (n : int) : int =
-        let collatzSeqDivision = (y-x)/n
-        let rec listOfSubranges index (acc : (int * int) list ) =
-            match index with
-            | 0 -> acc @ [(x, ((index+1)*collatzSeqDivision))]
-            | index when index < n-1 -> acc @ [((index*collatzSeqDivision), ((index+1)*collatzSeqDivision))]
-        listOfSubranges 0 List.empty
-        |> List.map maxCollatzHelper
-        |> Async.Parallel
-        |> Async.RunSynchronously
-            
+        let chunkSize = (y-(x+1))/n
         
+        let rec listOfSubranges chunkIndex (acc : (int * int) list ) =
+            if chunkIndex >= n then acc
+            else
+                let start = x + chunkIndex * chunkSize
+                let end' = if chunkIndex = n-1 then y else start + chunkSize - 1
+                listOfSubranges (chunkIndex+1) (acc @ [(start, end')])
+        let ranges = listOfSubranges 0 []
+            
+        let results = ranges
+                      |> List.map maxCollatzHelper
+                      |> Async.Parallel
+                      |> Async.RunSynchronously
+                      |> Array.toList
+                      
+        let maxResult = results
+                        |> List.maxBy snd
+                        
+        fst maxResult
 
 (* 4: Memory machines *)
 
