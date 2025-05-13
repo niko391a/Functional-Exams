@@ -232,7 +232,7 @@
         (evenSeq.Length, (fullSeq.Length - evenSeq.Length))
 
 (* Question 3.3: Maximum length Collatz Sequence *)
-  
+  // returns (number of longest, length of number)
     let maxCollatz (x : int) (y : int) : int * int =
         let rec maxCollatzHelper index length currentHighest : int * int =
             match index with
@@ -246,6 +246,8 @@
         maxCollatzHelper x 0 0
 
 (* Question 3.4: Collecting by length *)
+    
+    // description Add itself to the key with the corresponding length and set the current index as the value for that key
     let collect (x : int) (y : int) : Map<int, Set<int>> =
         let rec collectHelper index (acc : Map<int, Set<int>>) : Map<int, Set<int>> =
             match index with
@@ -261,12 +263,28 @@
                     let newAcc = acc.Add (currentCollatzLength, set [index])
                     collectHelper (index+1) newAcc
         collectHelper x Map.empty
-                // Add itself to the key with the corresponding length and set the current index as the value for that key
                 
     
 (* Question 3.5: Parallel maximum Collatz sequence *)
-
-    let parallelMaxCollatz _ = failwith "not implemented"
+    // Objective: Find the max collatz sequence length between x and y inclusive, by spltting processing up into n amount of threads
+    // maxCollatz returns (number of longest, length of number)
+    let maxCollatzHelper (xy : int * int) : Async<int * int> =
+        async {
+            let x, y = xy
+            return maxCollatz x y
+        }
+    let parallelMaxCollatz (x : int) (y : int) (n : int) : int =
+        let collatzSeqDivision = (y-x)/n
+        let rec listOfSubranges index (acc : (int * int) list ) =
+            match index with
+            | 0 -> acc @ [(x, ((index+1)*collatzSeqDivision))]
+            | index when index < n-1 -> acc @ [((index*collatzSeqDivision), ((index+1)*collatzSeqDivision))]
+        listOfSubranges 0 List.empty
+        |> List.map maxCollatzHelper
+        |> Async.Parallel
+        |> Async.RunSynchronously
+            
+        
 
 (* 4: Memory machines *)
 
