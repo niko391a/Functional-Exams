@@ -233,7 +233,17 @@
 
 (* Question 3.3: Maximum length Collatz Sequence *)
   
-    let maxCollatz _ = failwith "not implemented"
+    let maxCollatz (x : int) (y : int) : int * int =
+        let rec maxCollatzHelper index length currentHighest : int * int =
+            match index with
+            | index when index > y -> (currentHighest, length)
+            | index ->
+                let currentCollatz = collatz index
+                if currentCollatz.Length > length then
+                    maxCollatzHelper (index+1) currentCollatz.Length index
+                else
+                    maxCollatzHelper (index+1) length currentHighest
+        maxCollatzHelper x 0 0
 
 (* Question 3.4: Collecting by length *)
     let collect _ = failwith "not implemented"
