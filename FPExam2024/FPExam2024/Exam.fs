@@ -359,8 +359,18 @@
     let trace (l : log) : StateMonad<string list> =
         let rec traceHelper (l : log) (acc: StateMonad<string list>) : StateMonad<string list> =
             match l with
+            | [] -> acc
             | listHead :: listTail ->
                 match listHead with
                 | Post (sender, message) ->
-                    let! newMb = post sender message
-                | Read (sender) -> 
+                    state {
+                        let! () = post2 sender message
+                        return! traceHelper listTail acc
+                    }
+                | Read (sender) ->
+                    state {
+                        let! message = read2 sender
+                        let! currentAcc = acc
+                        return! traceHelper listTail (ret (currentAcc @ [message]))   
+                    }
+        traceHelper l (ret List.empty)
