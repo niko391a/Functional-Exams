@@ -34,51 +34,22 @@
     let p4 = And(Or(TT, And(TT, FF)), Or(FF, And(TT, FF)))
     
 (* Question 1.1: Evaluation *)
-    let rec eval (p : prop) : bool =
-        match p with
-        | TT -> true
-        | FF -> false
-        | And(P, Q) -> eval P && eval Q
-        | Or(P, Q) -> eval P || eval Q
+    let eval _ = failwith "not implemented"
     
 (* Question 1.2: Negation and implication *)
-    let rec negate (p : prop) : prop =
-        match p with 
-        | TT -> FF
-        | FF -> TT
-        | And(P, Q) -> Or(negate P,  negate Q)
-        | Or(P, Q) -> And(negate P, negate Q)
-    let implies (p1 : prop) (p2 : prop) : prop =
-        match (p1, p2) with
-        | P, Q -> Or(negate P, Q)
+    let negate _ = failwith "not implemented"
+    let implies _ = failwith "not implemented"
 
 (* Question 1.3: Bounded universal quantifiers *)
-    let forall (f : 'a -> prop) (lst : 'a list) : prop =
-        let rec tailHelper (f : 'a -> prop) (lst : 'a list) acc : prop =
-            match lst with
-            | [] -> acc
-            | listHead::listTail ->
-                tailHelper f listTail (And(acc, (f listHead)))
-        tailHelper f lst TT // TT because it's the default value that makes sense in the context of the forall function
+    let forall _ = failwith "not implemented"
 
 (* Question 1.4: Bounded existential quantifiers *)
 
-    let exists (f : 'a -> prop) (lst : 'a list) : prop =
-        match lst with
-        | [] -> FF
-        | sequence ->
-            let results = sequence |> List.map f
-            if List.exists (fun existence -> existence = TT) results then TT else FF
-
+    let exists _ = failwith "not implemented"
+    
 (* Question 1.5: Bounded unique existential quantifiers *)
 
-    let existsOne (f : 'a -> prop) (lst : 'a list) : prop =
-        match lst with
-        | [] -> FF
-        | sequence ->
-            let results = sequence |> List.map f
-            let fileteredEvaluation = List.filter (fun input -> input = TT) results
-            if List.length fileteredEvaluation = 1 then TT else FF
+    let existsOne _ = failwith "not implemented"
     
 (* 2: Code Comprehension *)
  
@@ -105,28 +76,18 @@
     
     Q: What are the types of functions foo, bar, and baz?
 
-    A: foo is recursive ('a list -> 'a list -> 'a list option)
-       bar is recursive ('a list -> 'a list -> 'a list)
-       baz is normal (string -> string -> string)        
+    A: <Your answer goes here>
 
 
     Q: What do the function foo, bar, and baz do.
        Focus on what they do rather than how they do it.
 
-    A: foo checks if the lists are exactly identical in content and order, xs and ys must have the same length
+    A: <Your answer goes here>
     
-    bar checks if the lists are exactly identical, xs and ys must have the same length
-    if they are not identical then xs will simply be printed out
-    
-    baz consumes identical number but order matters so "1 2 3 4" for "4 3 2 1" will not be consumed, any remainers from a will be outputted.
-    b must also not be longer than a, but a can be longer than b
-
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
-    A: foo -> IsCollectionIdentical()
-       bar -> ReturnNonIdenticalCollection()
-       baz -> ConsumeIdenticalValues()
+    A: <Your answer goes here>
         
     *)
         
