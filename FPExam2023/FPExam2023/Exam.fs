@@ -160,7 +160,21 @@
 
 (* Question 2.3: No recursion *) 
 
-    let foo2 _ = failwith "not implemented"
+    // let rec foo xs ys =  
+    //     match xs, ys with  
+    //     | _       , []                  -> Some xs   
+    //     | x :: xs', y :: ys' when x = y -> foo xs' ys'   
+    //     | _       , _                   -> None  
+    let foo2 (xs : 'a list) (ys : 'a list) =
+        if xs.Length < ys.Length then None
+        else
+            let front, _ = List.splitAt ys.Length xs
+            let indexPredicate = (List.forall2 (fun x y -> x = y) front ys) 
+            if indexPredicate then
+                let _, back = List.splitAt ys.Length xs
+                Some (back)
+            else None
+        
 
 (* Question 2.4 *)
 
