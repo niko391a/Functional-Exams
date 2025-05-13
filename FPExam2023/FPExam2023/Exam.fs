@@ -159,12 +159,6 @@
     *)
 
 (* Question 2.3: No recursion *) 
-
-    // let rec foo xs ys =  
-    //     match xs, ys with  
-    //     | _       , []                  -> Some xs   
-    //     | x :: xs', y :: ys' when x = y -> foo xs' ys'   
-    //     | _       , _                   -> None  
     let foo2 (xs : 'a list) (ys : 'a list) =
         if xs.Length < ys.Length then None
         else
@@ -177,7 +171,12 @@
         
 
 (* Question 2.4 *)
-
+    // let rec bar xs ys =
+    //     match foo xs ys with
+    //     | Some zs -> bar zs ys
+    //     | None -> match xs with
+    //               | [] -> []
+    //               | x :: xs' -> x :: (bar xs' ys) 
     (*
 
     Q: The function `bar` is not tail recursive. Demonstrate why.
@@ -194,8 +193,20 @@
 
     *)
 (* Question 2.5 *)
-
-    let barTail _ = failwith "not implemented"
+    // let rec bar xs ys =
+    //     match foo xs ys with
+    //     | Some zs -> bar zs ys
+    //     | None -> match xs with
+    //               | [] -> []
+    //               | x :: xs' -> x :: (bar xs' ys) 
+    let barTail (xs : 'a list) (ys : 'a list) : 'a list =
+        let rec barTailHelper (xs : 'a list) (ys : 'a list) cont : 'a list =
+            match foo xs ys with
+            | Some zs -> barTailHelper zs ys cont
+            | None -> match xs with
+                      | [] -> cont []
+                      | x :: xs' -> barTailHelper xs' ys (fun acc -> cont (x :: acc))
+        barTailHelper xs ys id
 
 (* 3: Collatz Conjecture *)
 
