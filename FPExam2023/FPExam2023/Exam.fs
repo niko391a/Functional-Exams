@@ -34,11 +34,21 @@
     let p4 = And(Or(TT, And(TT, FF)), Or(FF, And(TT, FF)))
     
 (* Question 1.1: Evaluation *)
-    let eval _ = failwith "not implemented"
+    let rec eval (p : prop) : bool =
+        match p with
+        | TT -> true
+        | FF -> false
+        | And(p, q) -> eval p && eval q
+        | Or(p, q) -> eval p || eval q
     
 (* Question 1.2: Negation and implication *)
-    let negate _ = failwith "not implemented"
-    let implies _ = failwith "not implemented"
+    let rec negate (p : prop) : prop =
+        match p with
+        | TT -> FF
+        | FF -> TT
+        | And(p, q) -> Or(negate p, negate q)
+        | Or(p, q) -> And(negate p, negate q)
+    let implies (p : prop) (q : prop) : prop = Or(negate p, q)
 
 (* Question 1.3: Bounded universal quantifiers *)
     let forall _ = failwith "not implemented"
