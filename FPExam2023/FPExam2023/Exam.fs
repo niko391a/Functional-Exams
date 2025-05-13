@@ -212,7 +212,17 @@
 
 (* Question 3.1: Collatz sequences *)
 
-    let collatz _ = failwith "not implemented"
+    let collatz (x : int) : int list =
+        let rec collatzHelper (x : int) (acc : int list) : int list =
+            match x with
+            | x when x < 1 -> failwith $"Non positive number: <{x}>"
+            | 1 -> List.rev (1 :: acc)
+            | x when x % 2 = 0 ->
+                collatzHelper (x/2) (x :: acc)
+            | x when x % 2 = 1 ->
+                collatzHelper ((3*x)+1) (x :: acc)
+            
+        collatzHelper x List.Empty
 
 (* Question 3.2: Even and odd Collatz sequence elements *)
 
