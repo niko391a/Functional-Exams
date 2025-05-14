@@ -337,9 +337,27 @@
 
 (* Question 4.2: Evaluation *)
 
-    let evalExpr _ = failwith "not implemented"
-    let evalStmnt _ = failwith "not implemented"
-    let evalProg _ = failwith "not implemented"
+    let rec evalExpr (m : mem) (e : expr) : int =
+        match e with
+        | Num x -> x
+        | Lookup e' -> lookup m (evalExpr m e')
+        | Plus (e1, e2) -> evalExpr m e1 + evalExpr m e2
+        | Minus (e1, e2) -> evalExpr m e1 - evalExpr m e2
+    let rec evalStmnt (m : mem) (s : stmnt) : mem =
+        match s with
+        | Assign (e1, e2) -> assign m (evalExpr m e1) (evalExpr m e2)
+        | While (e, p) ->
+            match evalExpr m e with
+            | 0 -> m
+            | _ ->
+                let m' = evalProg m p
+                evalStmnt m' (While (e, p))
+    and evalProg (m : mem) (p : prog) : mem =
+        match p with
+        | [] -> m
+        | s1::sn ->
+            let m' = evalStmnt m s1
+            evalProg m' sn
     
 (* Question 4.3: State monad *)
     type StateMonad<'a> = SM of (mem -> ('a * mem) option)  
@@ -387,7 +405,4 @@
           
     let parseAtom _ = failwith "not implemented" // Parse numbers and lookups
 
-//    Uncomment the following two lines once you finish parseExpr and parseAtom             
-//    do aref := parseAtom  
-//    do eref := parseExpr  
-      
+//    Uncomment the following two lines once you
