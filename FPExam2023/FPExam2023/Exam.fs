@@ -380,13 +380,18 @@
 
     let lookup2 (i : int) : StateMonad<int> =
         SM (fun m ->
-            let v = lookup m i
-            Some (v, m)
+            if i >= 0 && i < m.memory.Length then
+                let v = lookup m i
+                Some (v, m)
+            else None
         )
+        
     let assign2 (i : int) (v : int) : StateMonad<unit> =
         SM (fun m ->
-           let newMem = assign m i v
-           Some ((), newMem)
+           if i >= 0 && i < m.memory.Length then
+               let newMem = assign m i v
+               Some ((), newMem)
+           else None
         )
 
 (* Question 4.4: State monad evaluation *)
@@ -403,26 +408,62 @@
     let rec evalExpr2 (e : expr) : StateMonad<int> =
         match e with
         | Num x -> ret x
-        | Lookup e' -> evalExpr2 e' >>= lookup2
+        | Lookup e' ->
+            state {
+                let! x = evalExpr2 e'
+                return! lookup2 x
+            }
         | Plus (e1, e2) ->
-            evalExpr2 e1 >>= fun v1 ->
-                evalExpr2 e2 >>= fun v2 -> ret (v1+v2)
+            state {
+                let! v1 = evalExpr2 e1
+                let! v2 = evalExpr2 e2
+                return! ret (v1+v2)
+            }
         | Minus (e1, e2) ->
-            evalExpr2 e1 >>= fun v1 ->
-                evalExpr2 e2 >>= fun v2 -> ret (v1-v2)
+            state {
+                let! v1 = evalExpr2 e1
+                let! v2 = evalExpr2 e2
+                return! ret (v1-v2)
+            }
+        // With monads
+        // match e with
+        // | Num x -> ret x
+        // | Lookup e' -> evalExpr2 e' >>= lookup2
+        // | Plus (e1, e2) ->
+        //     evalExpr2 e1 >>= fun v1 ->
+        //         evalExpr2 e2 >>= fun v2 -> ret (v1+v2)
+        // | Minus (e1, e2) ->
+        //     evalExpr2 e1 >>= fun v1 ->
+        //         evalExpr2 e2 >>= fun v2 -> ret (v1-v2)
         
     let evalStmnt2 (s : stmnt) : StateMonad<unit> =
         match s with
         | Assign (e1, e2) ->
-            evalExpr2 e1 >>= fun v1 ->
-                evalExpr2 e2 >>= fun v2 -> ret assign2 v1 v2
-        | While (e, p) ->
+            state {
+                let! v1 = evalExpr2 e1
+                let! v2 = evalExpr2 e2
+                return! assign2 v1 v2
+            }
             
-    let evalProg2 (p : prog) =
+        | While (e, p) ->
+            state {
+                let! val1 = evalExpr2 e
+                match val1 with
+                | 0 -> return ()
+                | _ ->
+                    let! m' = evalProg2 p
+                    return! m' (While (e, p))
+                }
+
+    and evalProg2 (p : prog) : StateMonad<unit> = 
         match p with
-        | [] ->
+        | [] -> state { return () }
         | s1::sn ->
-            let m' 
+            state {
+                do! evalStmnt2 s1
+                return! evalProg2 sn 
+            }
+            
     
 (* Question 4.5: Parsing *)
     
