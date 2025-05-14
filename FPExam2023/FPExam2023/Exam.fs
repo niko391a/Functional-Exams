@@ -328,10 +328,12 @@
 
 (* Question 4.1: Memory blocks *)
 
-    type mem = unit (* replace this entire type with your own *)
-    let emptyMem _ = failwith "not implemented"
-    let lookup _ = failwith "not implemented"
-    let assign _ = failwith "not implemented"
+    type mem = {mutable memory : int[]}
+    let emptyMem (x : int) : mem = { memory = Array.create x 0 }
+    let lookup (m : mem) (i : int) : int = m.memory[i]
+    let assign (m : mem) (i : int) (v : int) : mem =
+        m.memory.[i] <- v
+        m
 
 (* Question 4.2: Evaluation *)
 

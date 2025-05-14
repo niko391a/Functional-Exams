@@ -171,7 +171,7 @@
 
     A: <Your answer goes here>
     bar "abc"
-    --> [for c in "abc" -> c]
+    --> [for c in "abc" -> c]   
     --> 'a' :: [for c in "bc" -> c]
     --> 'a' :: ('b' :: [for c in "c" -> c])
     --> 'a' :: ('b' :: ('c' :: [for c in "" -> c]))
