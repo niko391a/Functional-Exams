@@ -376,8 +376,16 @@
       
     let evalSM m (SM f) = f m
 
-    let lookup2 _ = failwith "not implemented"
-    let assign2 _ = failwith "not implemented"
+    let lookup2 (i : int) : StateMonad<int> =
+        SM (fun m ->
+            let v = lookup m i
+            Some (v, m)
+        )
+    let assign2 (i : int) (v : int) : StateMonad<unit> =
+        SM (fun m ->
+           let newMem = assign m i v
+           Some ((), newMem)
+        )
 
 (* Question 4.4: State monad evaluation *)
 
@@ -390,8 +398,8 @@
 
     let state = StateBuilder()
 
-    let evalExpr2 _ = failwith "not implemented"
-    let evalStmnt2 _ = failwith "not implemented"
+    let evalExpr2 : expr -> StateMonad<int> =
+    let evalStmnt2 : stmnt -> StateMonad<unit> = failwith "not implemented"
     let evalProg2 _ = failwith "not implemented"
     
 (* Question 4.5: Parsing *)
