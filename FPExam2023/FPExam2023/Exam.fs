@@ -469,10 +469,27 @@
     open JParsec.TextParser
       
     let ParseExpr, eref = createParserForwardedToRef<expr>()  
-    let ParseAtom, aref = createParserForwardedToRef<expr>()  
-      
-    let parseExpr _ = failwith "not implemented" // Parse addition and minus
-          
-    let parseAtom _ = failwith "not implemented" // Parse numbers and lookups
+    let ParseAtom, aref = createParserForwardedToRef<expr>()
 
-//    Uncomment the following two lines once you
+    // > "5+4" |> run parseExpr |> getSuccess
+    // - val it: expr = Plus (Num 5, Num 4)
+    // Parse addition and minus
+    let parseExpr : Parser<expr> =
+        let parseAdd = ParseAtom .>>. (pchar '+' >>. ParseExpr) |>> (fun (x, y) -> Plus(x, y)) <?> "Add"
+        
+        let parseSub = ParseAtom .>>. (pchar '-' >>. ParseExpr) |>> (fun (x, y) -> Plus(x, y)) <?> "Subtraction"
+        
+        parseAdd <|> parseSub <|> ParseAtom
+        
+    // Parse numbers and lookups
+    let parseAtom : Parser<expr> =
+        let parseNum = pint32 |>> Num
+        
+        let parseLookup = between (pchar '[') (pchar ']') ParseExpr |>> Lookup
+        
+        parseNum <|> parseLookup
+    
+    // Uncomment the following two lines once you finish parseExpr and parseAtom
+
+    do aref := parseAtom
+    do eref := parseExpr
