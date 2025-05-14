@@ -436,7 +436,7 @@
         //     evalExpr2 e1 >>= fun v1 ->
         //         evalExpr2 e2 >>= fun v2 -> ret (v1-v2)
         
-    let evalStmnt2 (s : stmnt) : StateMonad<unit> =
+    and evalStmnt2 (s : stmnt) : StateMonad<unit> =
         match s with
         | Assign (e1, e2) ->
             state {
@@ -444,15 +444,14 @@
                 let! v2 = evalExpr2 e2
                 return! assign2 v1 v2
             }
-            
         | While (e, p) ->
             state {
                 let! val1 = evalExpr2 e
                 match val1 with
                 | 0 -> return ()
                 | _ ->
-                    let! m' = evalProg2 p
-                    return! m' (While (e, p))
+                    do! evalProg2 p
+                    return! evalStmnt2 (While (e, p))
                 }
 
     and evalProg2 (p : prog) : StateMonad<unit> = 
