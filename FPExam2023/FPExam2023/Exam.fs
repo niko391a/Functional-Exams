@@ -190,6 +190,8 @@
        that function immediately.
 
     A: <Your answer goes here>
+        The reason that <x> is not tail recursive is because the recursive call is appended to x before being evaluated
+        This means that x :: (bar xs' ys) won't be evaluated until the collection is empty.
 
     *)
 (* Question 2.5 *)
@@ -328,7 +330,7 @@
 
 (* Question 4.1: Memory blocks *)
 
-    type mem = {mutable memory : int[]}
+    type mem = { mutable memory : int[] }
     let emptyMem (x : int) : mem = { memory = Array.create x 0 }
     let lookup (m : mem) (i : int) : int = m.memory[i]
     let assign (m : mem) (i : int) (v : int) : mem =
@@ -398,9 +400,29 @@
 
     let state = StateBuilder()
 
-    let evalExpr2 : expr -> StateMonad<int> =
-    let evalStmnt2 : stmnt -> StateMonad<unit> = failwith "not implemented"
-    let evalProg2 _ = failwith "not implemented"
+    let rec evalExpr2 (e : expr) : StateMonad<int> =
+        match e with
+        | Num x -> ret x
+        | Lookup e' -> evalExpr2 e' >>= lookup2
+        | Plus (e1, e2) ->
+            evalExpr2 e1 >>= fun v1 ->
+                evalExpr2 e2 >>= fun v2 -> ret (v1+v2)
+        | Minus (e1, e2) ->
+            evalExpr2 e1 >>= fun v1 ->
+                evalExpr2 e2 >>= fun v2 -> ret (v1-v2)
+        
+    let evalStmnt2 (s : stmnt) : StateMonad<unit> =
+        match s with
+        | Assign (e1, e2) ->
+            evalExpr2 e1 >>= fun v1 ->
+                evalExpr2 e2 >>= fun v2 -> ret assign2 v1 v2
+        | While (e, p) ->
+            
+    let evalProg2 (p : prog) =
+        match p with
+        | [] ->
+        | s1::sn ->
+            let m' 
     
 (* Question 4.5: Parsing *)
     
