@@ -457,16 +457,21 @@
     let (>>>=) x y = x >>= (fun _ -> y)  
       
     let evalSM p (SM f) = f p (emptyState p)
-
-    let goto2 _ = failwith "not implemented"
+    // let emptyState (p : basicProgram) : state = { lineNumber = firstLine p
+    //                                               environment = Map.empty }
     
-    let getCurrentStmnt2 _ = failwith "not implemented"
+    // let goto (l : UInt32) (st : state) : state = { st with lineNumber = l }
+    // let getCurrentStmnt (p : basicProgram) (st : state) : stmnt = getStmnt st.lineNumber p
+    // let update (v : var) (a : int) (st : state) : state = { st with environment = st.environment |> Map.add v a }
+    // let lookup (v : var) (st : state) : int = st.environment[v]
+    let goto2 (l : UInt32) : StateMonad<unit> = SM (fun _ st -> ((), goto l st)) // goto can be substituted for { st with lineNumber = l }
     
+    let getCurrentStmnt2 : StateMonad<stmnt> = SM (fun p st -> (getCurrentStmnt p st, st)) 
     
-    let lookup2 _ = failwith "not implemented"
-    let update2 _ = failwith "not implemented"
+    let lookup2 (v : var) : StateMonad<int> = SM (fun _ st -> (lookup v st, st))
+    let update2 (v : var) (a : int) : StateMonad<unit> = SM (fun _ st -> ((), update v a st))
     
-    let step2 _ = failwith "not implemented"
+    let step2 : StateMonad<unit> = SM(fun p st -> ((), step p st))
 
 (* Question 4.5: State monad evaluation *)
 
