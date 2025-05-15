@@ -9,4 +9,5 @@
 
 #load "JParsec.fs"
 #load "Exam.fs"
-open Exam2023;;
+open Exam2023
+open JParsec.TextParser;;

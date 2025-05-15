@@ -190,17 +190,19 @@
        that function immediately.
 
     A: <Your answer goes here>
-        The reason that <x> is not tail recursive is because the recursive call is appended to x before being evaluated
+        The reason that bar is not tail recursive is because the recursive call is appended to x before being evaluated
         This means that x :: (bar xs' ys) won't be evaluated until the collection is empty.
+        
+        Evaluation:
+        bar [1; 2; 3] [2] 
+        1 :: (bar [2; 3] [2]) ->
+        1 :: (3 :: (bar [] [1])) ->
+        1 :: 3 :: [] ->
+        1 :: 3 ->
+        [1; 3]
 
     *)
 (* Question 2.5 *)
-    // let rec bar xs ys =
-    //     match foo xs ys with
-    //     | Some zs -> bar zs ys
-    //     | None -> match xs with
-    //               | [] -> []
-    //               | x :: xs' -> x :: (bar xs' ys) 
     let barTail (xs : 'a list) (ys : 'a list) : 'a list =
         let rec barTailHelper (xs : 'a list) (ys : 'a list) cont : 'a list =
             match foo xs ys with
@@ -471,8 +473,6 @@
     let ParseExpr, eref = createParserForwardedToRef<expr>()  
     let ParseAtom, aref = createParserForwardedToRef<expr>()
 
-    // > "5+4" |> run parseExpr |> getSuccess
-    // - val it: expr = Plus (Num 5, Num 4)
     // Parse addition and minus
     let parseExpr : Parser<expr> =
         let parseAdd = ParseAtom .>>. (pchar '+' >>. ParseExpr) |>> (fun (x, y) -> Plus(x, y)) <?> "Add"
