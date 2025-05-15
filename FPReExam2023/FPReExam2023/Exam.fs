@@ -427,19 +427,21 @@
     let step (p : basicProgram) (st : state) : state = {st with lineNumber = nextLine st.lineNumber p}
   
         
-    let rec evalProg (p : basicProgram) (st : state) : state =
-        match p[st.lineNumber] with
-        | If (e, l) ->
-                if evalExpr e st <> 0
-                    then { st with lineNumber = l }
-                else step p st
-        | Let (v, e) ->
-                let e' = evalExpr e st
-                let st' = { st with environment = st.environment |> Map.add v e' }
-                step p st'
-        | Goto l -> goto l st
-        | End -> st
-    
+    let evalProg (p : basicProgram) : state =
+        let rec evalProgHelper (st : state) =
+            match p[st.lineNumber] with
+            | If (e, l) ->
+                    if evalExpr e st <> 0
+                        then evalProgHelper { st with lineNumber = l }
+                    else evalProgHelper (step p st)
+            | Let (v, e) ->
+                    let e' = evalExpr e st
+                    let st' = { st with environment = st.environment |> Map.add v e' }
+                    evalProgHelper (step p st')
+            | Goto l -> evalProgHelper (goto l st)
+            | End -> st
+        evalProgHelper (emptyState p)
+        
 (* Question 4.4: State monad *)
     type StateMonad<'a> = SM of (basicProgram -> state -> 'a * state)  
       
