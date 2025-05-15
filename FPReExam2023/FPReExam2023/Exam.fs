@@ -228,18 +228,82 @@
     
 (* Question 3.1: Balanced brackets *)
     
-    let balanced _ = failwith "not implemented"
+    let balanced (str : string) : bool =
+        let pairMapping = Map [ (')', '('); ('}', '{'); (']', '[') ]
+        let rec recBalanceHelper (list : char list) (stack : char list) : bool =
+            match list with
+            | ch::lstTail when ch = '(' || ch = '{' || ch ='[' ->
+                recBalanceHelper lstTail (ch :: stack)
+            | ch::lstTail when ch = ')' || ch = ']' || ch = '}' ->
+                match stack with
+                | [] -> false
+                | stackHead::stackTail ->
+                    if stackHead = pairMapping[ch] then
+                        recBalanceHelper lstTail stackTail
+                    else false
+            | [] -> if stack.IsEmpty then true
+                    else false
+                    
+        recBalanceHelper (explode str) List.Empty
         
 (* Question 3.2: Arbitrary delimiters *)
     
-    let balanced2 _ = failwith "not implemented"
+    let balanced2 (m: Map<char, char>) (str: string) : bool =
+    // Helper function to explode string to char list
+        let explode (s: string) = [for c in s -> c]
+        
+        // Define a recursive helper function to process the input
+        let rec helperBalance2 (stack: char list) (chars: char list) : bool =
+            match chars with
+            | [] -> 
+                // String is balanced if we've processed all characters and stack is empty
+                stack = []
+            | c :: rest ->
+                // Case 1: Try to use c as an opener
+                let openCharResult = 
+                    // If c is an opener, add it to the stack and continue
+                    if Map.containsKey c m then
+                        helperBalance2 (c :: stack) rest
+                    else false
+                
+                // Case 2: Try to use c as a closer
+                let closeCharResult =
+                    match stack with
+                    | [] -> false  // Can't close if stack is empty
+                    | top :: stackRest ->
+                        // If top of stack maps to c, remove top from stack and continue
+                        if Map.tryFind top m = Some c then
+                            helperBalance2 stackRest rest
+                        else false
+                
+                // Return true if either approach succeeds
+                openCharResult || closeCharResult
+               
+        helperBalance2 [] (explode str)
     
 (* Question 3.3: Matching brackets and palindromes *)    
     
-    let balanced3 _ = failwith "not implemented" 
+    let balanced3 (str : string) = balanced2 (Map [ ('(', ')'); ('{', '}'); ('[', ']') ]) str
     
-    let symmetric _ = failwith "not implemented"
-        
+    let symmetric (s : string) : bool =
+        // let splitAndFiltered = explode s |> List.filter System.Char.IsLetter |> List.map System.Char.ToLower
+        // let v1, v2 = List.splitAt (splitAndFiltered.Length/2) splitAndFiltered
+        // let reV2 = List.rev v2
+        //        
+        // let rec symmetricHelper (input : char list * char list) : bool = 
+        //     // split into two lists and continuously check each other
+        //     match input with
+        //     | [], [] -> true
+        //     | x::xs, y::ys ->
+        //         if x = y then
+        //             symmetricHelper (xs, ys)
+        //         else false
+        // symmetricHelper (v1, reV2)
+        // With balanced2
+        let splitAndFiltered = explode s |> List.filter System.Char.IsLetter |> List.map System.Char.ToLower |> implode
+        let map = ['a'..'z'] |> List.map (fun x -> (x, x)) |> Map.ofList
+        balanced2 map splitAndFiltered
+
 (* Question 3.4: Parsing balanced brackets *)    
                
     open JParsec.TextParser
