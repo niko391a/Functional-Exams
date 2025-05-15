@@ -457,13 +457,6 @@
     let (>>>=) x y = x >>= (fun _ -> y)  
       
     let evalSM p (SM f) = f p (emptyState p)
-    // let emptyState (p : basicProgram) : state = { lineNumber = firstLine p
-    //                                               environment = Map.empty }
-    
-    // let goto (l : UInt32) (st : state) : state = { st with lineNumber = l }
-    // let getCurrentStmnt (p : basicProgram) (st : state) : stmnt = getStmnt st.lineNumber p
-    // let update (v : var) (a : int) (st : state) : state = { st with environment = st.environment |> Map.add v a }
-    // let lookup (v : var) (st : state) : int = st.environment[v]
     let goto2 (l : UInt32) : StateMonad<unit> = SM (fun _ st -> ((), goto l st)) // goto can be substituted for { st with lineNumber = l }
     
     let getCurrentStmnt2 : StateMonad<stmnt> = SM (fun p st -> (getCurrentStmnt p st, st)) 
@@ -484,7 +477,38 @@
 
     let state = StateBuilder()
 
-    let evalExpr2 _ = failwith "not implemented"
+    let rec evalExpr2 (e : expr) : StateMonad<int> =
+        match e with
+        | Num x -> ret x
+        | Lookup v -> lookup2 v
+        | Plus (e1, e2) ->
+            state {
+                let! e1Val = evalExpr2 e1
+                let! e2Val = evalExpr2 e2
+                return! ret (e1Val + e2Val)
+            }
+        | Minus (e1, e2) ->
+            state {
+                let! e1Val = evalExpr2 e1
+                let! e2Val = evalExpr2 e2
+                return! ret (e1Val - e2Val)
+            }
     
-    let evalProg2 _ = failwith "not implemented"
-        
+    let rec evalProg2 : StateMonad<unit> =
+        state {
+            let! s' = getCurrentStmnt2
+            match s' with
+            | If (e, l) ->
+                let! e' = evalExpr2 e
+                do! (if e' <> 0 then goto2 l else step2)
+                do! evalProg2
+            | Let (v, e) ->
+                let! e' = evalExpr2 e
+                do! update2 v e'
+                do! step2
+                do! evalProg2
+            | Goto l ->
+                do! goto2 l
+                do! evalProg2 
+            | End -> return ()
+        }
