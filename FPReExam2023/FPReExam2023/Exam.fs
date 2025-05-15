@@ -307,16 +307,15 @@
 (* Question 3.4: Parsing balanced brackets *)    
                
     open JParsec.TextParser
-    
         
     let ParseBalanced, bref = createParserForwardedToRef<unit>()
     
-    let parseBalancedAux = pstring "Your parser goes here"
-        
+    let parseBalancedAux : Parser<unit> = many (pchar '(' <|> pchar ')' <|> pchar '[' <|> pchar ']' <|> pchar '{' <|> pchar '}') |>> (fun _ -> ())
+                                               
     // uncomment after you have done parseBalancedAUX
     
-    // let parseBalanced = parseBalancedAux .>> pstring "**END**"
-    // do bref := parseBalancedAux
+    let parseBalanced = parseBalancedAux .>> pstring "**END**"
+    do bref := parseBalancedAux
             
 (* Question 3.5: Parallel counting *)
 
