@@ -109,18 +109,27 @@
     
     Q: What are the types of functions foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A: 
+    foo has type: int -> bool
+    bar has type: int -> bool
+    baz has type: int list -> int list * int list
 
 
     Q: What do the function foo, bar, and baz do.
        Focus on what they do rather than how they do it.
 
-    A: <Your answer goes here>
+    A: 
+    foo returns true if the input is even
+    bar returns true if the input is uneven
+    baz groups even and uneven integers together, with duplicates, such that fst is even and snd is uneven
     
     Q: What would be appropriate names for functions 
        foo, bar, and baz?
 
-    A: <Your answer goes here>
+    A:
+    foo would be isIntEven()
+    bar would be isIntUneven()
+    baz would be sortEvenAndUneven()
         
     *)
         
