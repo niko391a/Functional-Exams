@@ -10,3 +10,4 @@
 #load "JParsec.fs"
 #load "Exam.fs"
 open ReExam2023;;
+let fp = 10 |> fibProg |> mkBasicProgram

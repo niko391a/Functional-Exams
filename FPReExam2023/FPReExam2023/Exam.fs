@@ -386,7 +386,6 @@
 (* Question 4.1: Basic programs *)
 
     type basicProgram = Map<uint32, stmnt>
-        // type prog = (uint32 * stmnt) list  // Programs are sequences of commands with their own line numbers 
 
     let mkBasicProgram (p : prog) : basicProgram = Map.ofList p
     let getStmnt (l : uint32) (p : basicProgram) : stmnt = p[l]
@@ -398,18 +397,21 @@
     
 (* Question 4.2: State *)
 
-    type state = unit // Replace by your type type goes here
-    
-    let emptyState _ = failwith "not implemented"
-    
-    
-    let goto _ = failwith "not implemented"
+    type state = { lineNumber : UInt32
+                   environment : Map<string, int> }
+            // type prog = (uint32 * stmnt) list  // Programs are sequences of commands with their own line numbers 
 
-    let getCurrentStmnt _ = failwith "not implemented"
+    let emptyState (p : basicProgram) : state = { lineNumber = firstLine p
+                                                  environment = Map.empty }
     
-    let update _ = failwith "not implemented"
     
-    let lookup _ = failwith "not implemented"
+    let goto (l : UInt32) (st : state) : state = { st with lineNumber = l }
+
+    let getCurrentStmnt (p : basicProgram) (st : state) : stmnt = getStmnt st.lineNumber p
+    
+    let update (v : var) (a : int) (st : state) : state = { st with environment = st.environment |> Map.add v a }
+    
+    let lookup (v : var) (st : state) : int = st.environment[v]
     
     
 (* Question 4.3: Evaluation *)
