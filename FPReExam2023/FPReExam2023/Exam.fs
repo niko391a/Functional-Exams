@@ -1,5 +1,7 @@
 ﻿module ReExam2023
 
+    open System
+
 (* If you are importing this into F# interactive then comment out
    the line above and remove the comment for the line bellow.
 
@@ -387,11 +389,12 @@
         // type prog = (uint32 * stmnt) list  // Programs are sequences of commands with their own line numbers 
 
     let mkBasicProgram (p : prog) : basicProgram = Map.ofList p
-    let getStmnt _ = failwith "not implemented"
+    let getStmnt (l : uint32) (p : basicProgram) : stmnt = p[l]
     
-    let nextLine _ = failwith "not implemented"
+    let nextLine (l : uint32) (p : basicProgram) : UInt32 = p |> Map.findKey (fun k _ -> k > l)
     
-    let firstLine _ = failwith "not implemented"
+    let firstLine (p : basicProgram) : UInt32 = p |> Map.minKeyValue |> fun (k, _) -> k
+                                                
     
 (* Question 4.2: State *)
 
