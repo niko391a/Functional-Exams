@@ -148,19 +148,40 @@
        what are the types of snippets A, B, and C, expressed using the F# syntax for types, and what are they -- 
        focus on what they do rather than how they do it.
     
-    A: <Your answer goes here>
+    A: 
+    baz xs has the type: int list * int list
+    bar x has the type: bool
+    (ys, x::zs) has the type: int list * int list
+    
+    baz xs is the partition of the even and odd elements where the
+    even elements are the first element of the tuple, and the odd elements
+    is the second.
+
+    bar x is true if x is odd and false otherwise.
+
+    (ys, x :: zs) is the tuple containing the lists ys as its first element
+    and the number x concatinated with zs as its second element.
     
     Q: * Explain the use of the `and`-operator that connect the `foo` and the `bar` functions.
        * Argue if the program would work if you replaced `and` with `let rec`.
 
-    A: <Your answer goes here>
-
+    A: 
+      The and operator allows for mutual recursion, i.e. functions that call each other.
+      It would therefore not work with let rec as the code would no longer compile as foo would not be able to call a function
+      before it has been initiated/declared yet.
     *)
 
 (* Question 2.3: No recursion *) 
-
-    let foo2 _ = failwith "not implemented"
-    let bar2 _ = failwith "not implemented"
+    let foo2 (input : int) : bool =
+        if input % 2 = 0 then
+            true
+        else
+            false
+    let bar2 (input : int) : bool =
+        if input % 2 = 1 then
+            true
+        else
+            false
 
 (* Question 2.4: Tail Recursion *)
 
@@ -175,13 +196,29 @@
        
        You do not have to step through the foo- or the bar-functions. You are allowed to evaluate 
        those function immediately.
-
+       
+    let rec baz =
+        function
+        | []                 -> [], []
+        | x :: xs when foo x ->
+            let ys, zs = baz xs
+            (x::ys, zs)
+        | x :: xs ->
+            let ys, zs = baz xs
+            (ys, x::zs)
+            
     A: <Your answer goes here>
     
     *)
 (* Question 2.5: Continuations *)
 
-    let bazTail _ = failwith "not implemented"
+    let bazTail (lst : int list) : int list * int list =
+        let rec bazTailHelper (lst : int list) cont : int list * int list =
+            match lst with
+            | [] -> cont ([], [])
+            | x::ys when foo x ->bazTailHelper ys (fun (even, uneven) -> cont(x::even, uneven))
+            | x::ys -> bazTailHelper ys (fun (even, uneven) -> cont(even, x::uneven))
+        bazTailHelper lst id
 
 (* 3: Balanced brackets *)
 
