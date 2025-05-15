@@ -432,11 +432,11 @@
             match p[st.lineNumber] with
             | If (e, l) ->
                     if evalExpr e st <> 0
-                        then evalProgHelper { st with lineNumber = l }
+                        then evalProgHelper (goto l st) // or { st with lineNumber = l }
                     else evalProgHelper (step p st)
             | Let (v, e) ->
                     let e' = evalExpr e st
-                    let st' = { st with environment = st.environment |> Map.add v e' }
+                    let st' = update v e' st // or { st with environment = st.environment |> Map.add v e' }
                     evalProgHelper (step p st')
             | Goto l -> evalProgHelper (goto l st)
             | End -> st
