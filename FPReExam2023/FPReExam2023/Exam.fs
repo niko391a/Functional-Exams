@@ -66,9 +66,17 @@
         
 (* Question 1.5: Iteration *)
 
-    let iterate _ = failwith "not implemented"
-        
-    let pow2 _ = failwith "not implemented"
+    let rec iterate (f : 'a -> 'a) (acc : 'a) (a : arith) : 'a =
+        match eval a with
+        | 0 -> acc
+        | _ ->
+            let newAcc = f acc
+            let a' = subtract a (Num 1)
+            iterate f newAcc a'
+
+    let pow2 (a : arith) (b : arith) =
+        let powerFunc acc = multiply acc a
+        iterate powerFunc (Num 1) b 
     
 (* 2: Code Comprehension *)
  
