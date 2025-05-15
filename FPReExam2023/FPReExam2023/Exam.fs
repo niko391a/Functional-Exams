@@ -416,13 +416,29 @@
     
 (* Question 4.3: Evaluation *)
     
-    let evalExpr _ = failwith "not implemented"
+    let rec evalExpr (e : expr) (st : state) : int =
+        match e with
+        | Num x -> x
+        | Lookup v -> lookup v st
+        | Plus (e1, e2) -> (evalExpr e1 st) + (evalExpr e2 st)
+        | Minus (e1, e2) -> (evalExpr e1 st) - (evalExpr e2 st)
     
     
-    let step _ = failwith "not implemented"
+    let step (p : basicProgram) (st : state) : state = {st with lineNumber = nextLine st.lineNumber p}
   
         
-    let evalProg _ = failwith "not implemented"
+    let rec evalProg (p : basicProgram) (st : state) : state =
+        match p[st.lineNumber] with
+        | If (e, l) ->
+                if evalExpr e st <> 0
+                    then { st with lineNumber = l }
+                else step p st
+        | Let (v, e) ->
+                let e' = evalExpr e st
+                let st' = { st with environment = st.environment |> Map.add v e' }
+                step p st'
+        | Goto l -> goto l st
+        | End -> st
     
 (* Question 4.4: State monad *)
     type StateMonad<'a> = SM of (basicProgram -> state -> 'a * state)  

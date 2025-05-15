@@ -11,3 +11,6 @@
 #load "Exam.fs"
 open ReExam2023;;
 let fp = 10 |> fibProg |> mkBasicProgram
+let st = emptyState fp
+let st' = update "x" 42 st
+let smallProg = [(10u, Let ("x", Num 42)); (20u, End)] |> mkBasicProgram
