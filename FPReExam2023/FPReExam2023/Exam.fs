@@ -47,7 +47,11 @@
 
 (* Question 1.3: Multiplication *)
         
-    let multiply _ = failwith "not implemented"
+    let rec multiply (a : arith) (b : arith) : arith =
+        match a, b with
+        | Num x, Num y -> x * y |> Num
+        | Num x, Add(a, b) -> Add(multiply (Num x) a, multiply (Num x) b)
+        | Add(a, b), c -> Add(multiply a c, multiply b c)
     
 (* Question 1.4: Exponents *)
 
