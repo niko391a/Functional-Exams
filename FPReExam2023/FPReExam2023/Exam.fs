@@ -319,7 +319,24 @@
             
 (* Question 3.5: Parallel counting *)
 
-    let countBalanced _ = failwith "not implemented"
+    let countBalanced (lst : string list) (x : int) : int =
+        // Calculate chunk size such that we get x chunks (allowing last one to be smaller
+        let chunkAmount = (lst.Length + x - 1) / x
+        let chunks = List.chunkBySize chunkAmount lst
+        
+        // Define an async computation that checks a chunk of strings for balance
+        let processChunk (chunk: string list) : Async<int> =
+            async {
+                return chunk |> List.filter balanced |> List.length
+            }
+            
+        // Launch all async computations in parallel    
+        chunks
+        |> List.map processChunk
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> Array.sum
+        
 
 (* 4: BASIC *)
     
