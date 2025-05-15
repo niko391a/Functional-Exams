@@ -55,8 +55,15 @@
     
 (* Question 1.4: Exponents *)
 
-    let pow _ = failwith "not implemented"
-    
+    let pow (a : arith) (b : arith) =
+        let rec powHelper (a : arith) (b : arith) (acc : arith) : arith = 
+            match eval b with
+            | 1 -> acc 
+            | _ ->
+                let b' = subtract b (Num 1)
+                powHelper a b' (multiply acc a)
+        powHelper a b a
+        
 (* Question 1.5: Iteration *)
 
     let iterate _ = failwith "not implemented"
