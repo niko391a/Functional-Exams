@@ -288,6 +288,7 @@
     let balanced3 (str : string) = balanced2 (Map [ ('(', ')'); ('{', '}'); ('[', ']') ]) str
     
     let symmetric (s : string) : bool =
+        // Solution without balanced2
         // let splitAndFiltered = explode s |> List.filter System.Char.IsLetter |> List.map System.Char.ToLower
         // let v1, v2 = List.splitAt (splitAndFiltered.Length/2) splitAndFiltered
         // let reV2 = List.rev v2
@@ -302,6 +303,7 @@
         //         else false
         // symmetricHelper (v1, reV2)
         // With balanced2
+        
         let splitAndFiltered = explode s |> List.filter System.Char.IsLetter |> List.map System.Char.ToLower |> implode
         let map = ['a'..'z'] |> List.map (fun x -> (x, x)) |> Map.ofList
         balanced2 map splitAndFiltered
