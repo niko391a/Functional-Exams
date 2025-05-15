@@ -384,8 +384,9 @@
 (* Question 4.1: Basic programs *)
 
     type basicProgram = Map<uint32, stmnt>
-    
-    let mkBasicProgram _ = failwith "not implemented"
+        // type prog = (uint32 * stmnt) list  // Programs are sequences of commands with their own line numbers 
+
+    let mkBasicProgram (p : prog) : basicProgram = Map.ofList p
     let getStmnt _ = failwith "not implemented"
     
     let nextLine _ = failwith "not implemented"
