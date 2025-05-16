@@ -238,7 +238,12 @@
 
 (* Question 3.2 *)
 
-    let add _ = failwith "not implemented"
+    let add  (m1 : matrix) (m2 : matrix) : matrix =
+        if numCols m1 <> numCols m2 || numRows m1 <> numRows m2 then failDimensions m1 m2
+        else
+            let rows = numRows m1
+            let columns = numCols m1
+            init (fun r c -> get m1 r c + get m2 r c) rows columns
 
 (* Question 3.3 *)
     
