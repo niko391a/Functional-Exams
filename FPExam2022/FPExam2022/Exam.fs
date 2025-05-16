@@ -54,9 +54,14 @@
         
 
 (* Question 1.3 *)
-    let map _ = failwith "not implemented"
+    let map (mapper : uint8 -> grayscale) (img : grayscale) : grayscale  =
+        let rec aux (mapper : uint8 -> grayscale) (img : grayscale) : grayscale =
+            match img with
+            | Square x -> x |> mapper
+            | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> Quad(aux mapper grayscale, aux mapper grayscale1, aux mapper grayscale2, aux mapper grayscale3)
+        aux mapper img
     
-    let bitmap _ = failwith "not implemented"
+    let bitmap (img : grayscale) : grayscale = map (fun x -> if x <= 127uy then Square 0uy else Square 255uy) img
 
 (* Question 1.4 *)
 
