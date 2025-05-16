@@ -250,11 +250,52 @@
     let m1 = (init (fun i j -> i * 3 + j + 1) 2 3) 
     let m2 = (init (fun j k -> j * 2 + k + 1) 3 2)
 
-    let dotProduct _ = failwith "not implemented"
-    let mult _ = failwith "not implemented"
+    let dotProduct (m1 : matrix) (m2 : matrix) (row : int) (col : int) : int =
+        let numColsM1 = numCols m1
+        let numRowsM2 = numRows m2
+
+        let rec aux index sum =
+            match index with
+            | i when i = numColsM1 -> sum // Or numRowsM2, they are equal
+            | i ->
+                let elementM1 = get m1 row i
+                let elementM2 = get m2 i col
+                aux (i + 1) (sum + elementM1 * elementM2)
+
+        aux 0 0
+        
+    let mult (m1 : matrix) (m2 : matrix) : matrix =
+        let m1Cols = numCols m1
+        let m2Rows = numRows m2
+        let m1Rows = numRows m1
+        let m2Cols = numCols m2
+
+        if m1Cols <> m2Rows then failDimensions m1 m2
+        else
+            init (fun r c -> dotProduct m1 m2 r c) m1Rows m2Cols
 
 (* Question 3.4 *)
-    let parInit _ = failwith "not implemented"
+    open System.Threading.Tasks
+
+    let parInit (f : int -> int -> int) (rows : int) (cols : int) : matrix =
+        // Initialize an empty matrix with the correct dimensions
+        let result = init (fun _ _ -> 0) rows cols
+
+        // Recursive function to initialize cells in parallel
+        let rec initialize row col =
+            if row >= rows then () // Base case: all rows processed
+            elif col >= cols then initialize (row + 1) 0 // Move to the next row
+            else
+                // Spawn a thread to initialize the current cell
+                Task.Run(fun () -> set result row col (f row col)) |> ignore
+                // Recurse to the next cell in the current row
+                initialize row (col + 1)
+
+        // Start the recursive initialization
+        initialize 0 0
+
+        // Return the initialized matrix
+        result
 
 (* 4: Stack machines *)
 
