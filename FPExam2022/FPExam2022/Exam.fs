@@ -138,15 +138,26 @@
     Q: What warning and why?
 
     A: 
+    the warning is:
+    stdin(4,9): warning FS0025: Incomplete pattern matches on this expression. 
+    For example, the value '1' may indicate a case not covered by the pattern(s). 
+    However, a pattern rule with a 'when' clause might successfully match this value.
     
+    This is due to the function not having an explicit pattern for negative integers
 
     *)
 
-    let foo2 _ = failwith "not implemented"
+    let rec foo2 (i : int) =
+        match i with
+        | x when x < 0 -> failwith $"{x} mut be larger or equal to 0"
+        | 0 -> ""
+        | x when x % 2 = 0 -> foo (x / 2) + "0"
+        | x when x % 2 = 1 -> foo (x / 2) + "1"
+        | _ -> failwith "Not a valid input"
+
 
 (* Question 2.3 *) 
-
-    let bar2 _ = failwith "not implemented"
+    let bar2 (lst : int list) : string list = lst |> List.map foo
 
 (* Question 2.4 *)
 
