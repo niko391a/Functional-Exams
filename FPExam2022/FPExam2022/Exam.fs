@@ -305,7 +305,7 @@
 (* Question 4.1 *)
 
     type stack = int list
-    let emptyStack : stack = List.Empty
+    let emptyStack (unit : unit) : stack = List.Empty
 
 (* Question 4.2 *)
 
@@ -328,7 +328,7 @@
                     let evalutation = p1' * p2' 
                     let _, newAcc = List.splitAt 2 acc
                     aux progTail (evalutation :: newAcc)
-        (aux prog emptyStack).Head
+        (aux prog (emptyStack())).Head
 
 (* Question 4.3 *)
     
@@ -347,10 +347,15 @@
     let (>>=) x f = bind f x
     let (>>>=) x y = x >>= (fun _ -> y)
 
-    // let evalSM (SM f) = f (emptyStack ())
+    let evalSM (SM f) = f (emptyStack ())
 
-    let push _ = failwith "not implemented"
-    let pop _ = failwith "not implemented"
+    let push (x : int) : StateMonad<unit> = SM (fun (st : stack) -> Some ((), x::st))
+    let pop : StateMonad<int> = SM (fun st ->
+        if st.IsEmpty then
+            None
+        else
+            let _, st' = List.splitAt 1 st
+            Some (st.Head, st'))
 
 (* Question 4.4 *)
 
