@@ -65,9 +65,23 @@
 
 (* Question 1.4 *)
 
-    let fold _ = failwith "not implemented"
-    
-    let countWhite2 _ = failwith "not implemented"
+    let rec fold (folder : 'a -> uint8 -> 'a) (acc : 'a) (img : grayscale) : 'a =
+        match img with
+        | Square x -> folder acc x
+        | Quad(g1, g2, g3, g4) ->
+                                let acc1 = fold folder acc g1
+                                let acc2 = fold folder acc1 g2
+                                let acc3 = fold folder acc2 g3
+                                let acc4 = fold folder acc3 g4
+                                acc4
+    // let countWhite (img : grayscale) : int =
+    //     let rec aux img : int =
+    //         match img with
+    //         | Square 255uy -> 1
+    //         | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> aux grayscale + aux grayscale1 + aux grayscale2 + aux grayscale3
+    //         | _ -> 0
+    //     aux img
+    let countWhite2 (img : grayscale) : int = int (fold (fun acc x -> if x = 255uy then acc + 1uy else acc) 0uy img)
 
 (* 2: Code Comprehension *)
     let rec foo =
@@ -87,23 +101,30 @@
     
     Q: What are the types of functions foo and bar?
 
-    A: <Your answer goes here>
+    A: 
+    foo has type int -> string
+    bar has type int list -> string list
 
 
     Q: What does the function bar do.
        Focus on what it does rather than how it does it.
 
-    A: <Your answer goes here>
+    A: 
+    foo converts an int to binary 
+    bar converts a list of integers to their binary counterparts
     
     Q: What would be appropriate names for functions 
        foo and bar?
 
-    A: <Your answer goes here>
+    A: 
+    foo would be toBinary()
+    bar would be listToBinary()
         
     Q: The function foo does not return reasonable results for all possible inputs.
        What requirements must we have on the input to foo in order to get reasonable results?
     
-    A: <Your answer goes here>
+    A:
+    the input must be a non negative number and larger than 0
     *)
         
 
@@ -116,7 +137,8 @@
     
     Q: What warning and why?
 
-    A: <Your answer goes here>
+    A: 
+    
 
     *)
 
