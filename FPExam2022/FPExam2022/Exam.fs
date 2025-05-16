@@ -170,20 +170,48 @@
        Keep in mind that all steps in an evaluation chain must evaluate to the same value
        ((5 + 4) * 3 --> 9 * 3 --> 27, for instance).
 
-    A: <Your answer goes here>
+    A: 
+       foo 5
+       foo (5 / 2) + "1"
+       foo (foo (2 / 2) + "0") + "1"
+       foo (foo (foo (1 / 2) + "1") + "0") + "1"
+       foo (foo ("" + "1") + "0") + "1"
+       foo ("1" + "0") + "1"
+       "10" + "1"
+       "101"
     
+    The reason that foo is not tail recursive is because the recursive call to foo is not the last operation performed.
+    After each recursive call returns, the function still needs to append either "0" or "1" to the result.
+    This means that the function must save each call frame on the stack to finish the string concatenation after returning from the recursive call.
+    In a tail-recursive function, there would be no additional work to do after the recursive call.
+        
     Q: Even though neither `foo` nor `bar` is tail recursive only one of them runs the risk of overflowing the stack.
        Which one and why does  the other one not risk overflowing the stack?
 
-    A: <Your answer goes here>
+    A:
+    foo does not run the risk due to the limitation of what is allowed in a 32bit signed integer
 
     *)
+
 (* Question 2.5 *)
 
-    let fooTail _ = failwith "not implemented"
+    let fooTail (x : int) : string =
+        let rec aux x acc : string =
+            match x with
+            | 0 -> acc
+            | x when x % 2 = 0 -> aux (x / 2) (acc + "0")
+            | x when x % 2 = 1 -> aux (x / 2) (acc + "1")
+        aux x ""
 
 (* Question 2.6 *)
-    let barTail _ = failwith "not implemented"
+    let barTail (lst : int list) : string list =
+        let rec aux (lst : int list) (acc : string list) : string list =
+            match lst with
+            | [] -> acc
+            | x :: xs ->
+                let x' = foo x
+                aux xs (acc @ [x'])
+        aux lst List.Empty
 
 (* 3: Matrix operations *)
 
