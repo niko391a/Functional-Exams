@@ -367,8 +367,29 @@
         member this.Combine(a, b) = a >>= (fun _ -> b)
 
     let state = new StateBuilder()
+    let runStackProg2 (prog : stackProgram) : StateMonad<int> =
+        let rec aux (prog : stackProgram) : StateMonad<int> =
+            state {
+                match prog with
+                | [] ->  return! pop
+                | progHead::progTail ->
+                    match progHead with
+                    | Push x ->
+                        do! push x
+                        return! aux progTail
+                    | Add ->
+                        let! p1 = pop
+                        let! p2 = pop
+                        do! push (p1 + p2)
+                        return! aux progTail
+                    | Mult ->
+                        let! p1 = pop
+                        let! p2 = pop
+                        do! push (p1 * p2)
+                        return! aux progTail
+            }
+        aux prog
 
-    let runStackProg2 _ = failwith "not implemented"
     
 (* Question 4.5 *)
     
