@@ -304,12 +304,31 @@
 
 (* Question 4.1 *)
 
-    type stack = unit (* replace this entire type with your own *)
-    let emptyStack _ = failwith "not implemented"
+    type stack = int list
+    let emptyStack : stack = List.Empty
 
 (* Question 4.2 *)
 
-    let runStackProgram _ = failwith "not implemented"
+    let runStackProgram (prog : stackProgram) : int =
+        let rec aux (prog : stackProgram) (acc : stack) =
+            match prog with
+            | [] -> acc
+            | progHead::progTail ->
+                match progHead with
+                | Push x -> aux progTail (x :: acc)
+                | Add ->
+                    let p1' = acc[0]
+                    let p2' = acc[1]
+                    let evalutation = p1' + p2' 
+                    let _, newAcc = List.splitAt 2 acc
+                    aux progTail (evalutation :: newAcc)
+                | Mult ->
+                    let p1' = acc[0]
+                    let p2' = acc[1]
+                    let evalutation = p1' * p2' 
+                    let _, newAcc = List.splitAt 2 acc
+                    aux progTail (evalutation :: newAcc)
+        (aux prog emptyStack).Head
 
 (* Question 4.3 *)
     
@@ -328,7 +347,7 @@
     let (>>=) x f = bind f x
     let (>>>=) x y = x >>= (fun _ -> y)
 
-    let evalSM (SM f) = f (emptyStack ())
+    // let evalSM (SM f) = f (emptyStack ())
 
     let push _ = failwith "not implemented"
     let pop _ = failwith "not implemented"
