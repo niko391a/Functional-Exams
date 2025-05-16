@@ -36,10 +36,22 @@
             Square 0uy)
     
 (* Question 1.1 *)
-    let countWhite _ = failwith "not implemented"
+    let countWhite (img : grayscale) : int =
+        let rec aux img : int =
+            match img with
+            | Square 255uy -> 1
+            | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> aux grayscale + aux grayscale1 + aux grayscale2 + aux grayscale3
+            | _ -> 0
+        aux img
     
 (* Question 1.2 *)
-    let rotateRight _ = failwith "not implemented"
+    let rotateRight (img : grayscale) : grayscale =
+        let rec aux img : grayscale =
+            match img with
+            | Square x -> Square x
+            | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> Quad(aux grayscale3, aux grayscale, aux grayscale1, aux grayscale2)
+        aux img
+        
 
 (* Question 1.3 *)
     let map _ = failwith "not implemented"
