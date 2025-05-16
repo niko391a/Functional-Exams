@@ -1,4 +1,7 @@
 ﻿module Exam2022
+
+    open JParsec
+
 (* If you are importing this into F# interactive then comment out
    the line above and remove the comment for the line bellow.
 
@@ -394,5 +397,14 @@
 (* Question 4.5 *)
     
     open JParsec.TextParser
+    let spaces : Parser<char list> = many (pchar ' ')
+    let parseStackProg : Parser<'a> = 
+        let pPush = pstring "PUSH" .>> spaces >>. pint32 |>> Push
+        let pAdd =  pstring "ADD" |>> (fun _ -> Add)
+        let pMult =  pstring "MULT" |>> (fun _ -> Mult)
+        let pCmd = (pPush <|> pAdd <|> pMult)
+        many pCmd .>> spaces
 
-    let parseStackProg _ = failwith "not implemented"
+
+
+         
