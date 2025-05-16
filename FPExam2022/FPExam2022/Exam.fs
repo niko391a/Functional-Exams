@@ -233,7 +233,8 @@
 
 (* Question 3.1 *)
 
-    let failDimensions _ = failwith "not implemented"
+    let failDimensions (m1 : matrix) (m2 : matrix) : 'a = failwith $"Invalid matrix dimensions: m1 rows = {numRows m1}, m1 columns = {numCols m1},
+    m2 roms = {numRows m2}, m2 columns = {numCols m2}"
 
 (* Question 3.2 *)
 
