@@ -314,7 +314,8 @@
         
     let ParseBalanced, bref = createParserForwardedToRef<unit>()
     
-    let parseBalancedAux : Parser<unit> = many (pchar '(' <|> pchar ')' <|> pchar '[' <|> pchar ']' <|> pchar '{' <|> pchar '}') |>> (fun _ -> ())
+    let parseBalancedAux : Parser<unit> = many (pchar '(' <|> pchar ')' <|> pchar '[' <|> pchar ']' <|> pchar '{' <|> pchar '}')
+                                          |>> (fun chars -> if balanced (implode chars) then () else failwith "Unbalanced string" )
                                                
     // uncomment after you have done parseBalancedAUX
     
