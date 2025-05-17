@@ -49,7 +49,7 @@
         | Square v -> Square v
         | Quad (a, b, c, d) -> f (operate f a) (operate f b) (operate f c) (operate f d)
     
-    let mirror2 _ = failwith "not implemented"
+    let mirror2 (img : grayscale) : grayscale = operate (fun g1 g2 g3 g4 -> Quad(g2, g1, g4, g3)) img
 
 (* Question 1.4 *)
 
