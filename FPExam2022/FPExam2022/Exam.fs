@@ -192,6 +192,7 @@
        Which one and why does  the other one not risk overflowing the stack?
 
     A:
+    bar runs the risk of overflowing the stack.
     foo does not run the risk due to the limitation of what is allowed in a 32bit signed integer
 
     *)
@@ -382,6 +383,10 @@
                         let! p2 = pop
                         do! push (p1 + p2)
                         return! aux progTail
+                        
+                        // OR
+                        // let p3 = p1 + p2
+                        // do! push p3 
                     | Mult ->
                         let! p1 = pop
                         let! p2 = pop
@@ -395,13 +400,17 @@
     
     open JParsec.TextParser
     let spaces : Parser<char list> = many (pchar ' ')
-    let parseStackProg : Parser<'a> = 
+    let parseStackProg : Parser<stackProgram> = 
         let pPush = pstring "PUSH" .>> spaces >>. pint32 |>> Push
-        let pAdd =  pstring "ADD" |>> (fun _ -> Add)
-        let pMult =  pstring "MULT" |>> (fun _ -> Mult)
-        let pCmd = (pPush <|> pAdd <|> pMult)
-        many pCmd .>> spaces
-
+        let pAdd = pstring "ADD" |>> (fun _ -> Add)
+        let pMult = pstring "MULT" |>> (fun _ -> Mult)
+        
+        // Each command can be followed by spaces and then a newline
+        let lineEnd = spaces .>> opt (pstring "\n") .>> spaces
+        let pCmd = (pPush <|> pAdd <|> pMult) .>> lineEnd
+        
+        // Parse many commands
+        many pCmd
 
 
          

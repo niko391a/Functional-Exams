@@ -53,7 +53,12 @@
 
 (* Question 1.4 *)
 
-    let compress _ = failwith "not implemented"
+    let compress (img : grayscale) : grayscale =
+        let rec aux img : grayscale =
+            match img with
+            | Square x -> Square x
+            | Quad(g1, g2, g3, g4) -> 
+        aux img
 
 (* 2: Code Comprehension *)
     let rec foo f =
@@ -73,8 +78,9 @@
     
     Q: What are the types of functions foo and bar?
 
-    A: <Your answer goes here>
-
+    A: 
+    foo has type ('a -> bool) -> 'a list -> 'a list
+    bar has type ('a -> bool) list -> 'a list -> 'a list
 
     Q: What do the functions foo and  bar do. 
        Focus on what it does rather than how it does it.
