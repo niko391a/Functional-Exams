@@ -32,10 +32,16 @@
             Square 0uy)
     
 (* Question 1.1 *)
-    let maxDepth (img : grayscale)  = failwith "not implemented"
+    let rec maxDepth (img : grayscale) : int =
+        match img with
+        | Square _ -> 0
+        | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> 1 + (maxDepth grayscale) + (maxDepth grayscale1) + (maxDepth grayscale2) + (maxDepth grayscale3)
     
 (* Question 1.2 *)
-    let mirror _ = failwith "not implemented"
+    let rec mirror (img : grayscale) : grayscale =
+        match img with
+        | Square x -> Square x
+        | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> Quad(mirror grayscale1, mirror grayscale, mirror grayscale3, mirror grayscale2)
 
 (* Question 1.3 *)
     let operate _ = failwith "not implemented"

@@ -8,4 +8,4 @@
 *)
 
 #load "Exam.fs"
-open Exam2022_2;;
+open ReExam2022;;
