@@ -309,7 +309,7 @@
     let runStackProg (prog : stackProgram) : int =
         let rec aux (prog : stackProgram) (acc : stack) =
             match prog with
-            | [] -> acc
+            | [] -> if acc = [] then failwith "empty stack" else acc
             | progHead::progTail ->
                 match progHead with
                 | Push x -> aux progTail (x :: acc)
@@ -327,6 +327,7 @@
                     let evaluation = p1' * p2' 
                     let _, newAcc = List.splitAt 2 acc
                     aux progTail (evaluation :: newAcc)
+
         (aux prog (emptyStack())).Head
 
 (* Question 4.3 *)
