@@ -44,7 +44,10 @@
         | Quad(grayscale, grayscale1, grayscale2, grayscale3) -> Quad(mirror grayscale1, mirror grayscale, mirror grayscale3, mirror grayscale2)
 
 (* Question 1.3 *)
-    let operate _ = failwith "not implemented"
+    let rec operate (f : grayscale -> grayscale -> grayscale -> grayscale -> grayscale) (img : grayscale) : grayscale =
+        match img with
+        | Square v -> Square v
+        | Quad (a, b, c, d) -> f (operate f a) (operate f b) (operate f c) (operate f d)
     
     let mirror2 _ = failwith "not implemented"
 

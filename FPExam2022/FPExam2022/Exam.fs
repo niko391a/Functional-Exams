@@ -277,25 +277,34 @@
             init (fun r c -> dotProduct m1 m2 r c) m1Rows m2Cols
 
 (* Question 3.4 *)
-    open System.Threading.Tasks
-
     let parInit (f : int -> int -> int) (rows : int) (cols : int) : matrix =
         // Initialize an empty matrix with the correct dimensions
         let result = init (fun _ _ -> 0) rows cols
-
-        // Recursive function to initialize cells in parallel
-        let rec initialize row col =
-            if row >= rows then () // Base case: all rows processed
-            elif col >= cols then initialize (row + 1) 0 // Move to the next row
+        
+        // Create async operations for each cell using recursion
+        let rec buildAsyncOperations row col acc =
+            if row >= rows then 
+                acc  // Base case: reached the end of rows
+            elif col >= cols then 
+                buildAsyncOperations (row + 1) 0 acc  // Move to next row
             else
-                // Spawn a thread to initialize the current cell
-                Task.Run(fun () -> set result row col (f row col)) |> ignore
-                // Recurse to the next cell in the current row
-                initialize row (col + 1)
-
-        // Start the recursive initialization
-        initialize 0 0
-
+                // Create an async operation for the current cell
+                let operation = async {
+                    let value = f row col
+                    set result row col value
+                }
+                // Continue with next column
+                buildAsyncOperations row (col + 1) (operation :: acc)
+        
+        // Build the list of async operations
+        let asyncOperations = buildAsyncOperations 0 0 []
+        
+        // Run all async operations in parallel and wait for them to complete
+        asyncOperations
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> ignore
+        
         // Return the initialized matrix
         result
 
