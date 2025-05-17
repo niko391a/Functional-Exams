@@ -306,7 +306,7 @@
 
 (* Question 4.2 *)
 
-    let runStackProgram (prog : stackProgram) : int =
+    let runStackProg (prog : stackProgram) : int =
         let rec aux (prog : stackProgram) (acc : stack) =
             match prog with
             | [] -> acc
@@ -314,12 +314,14 @@
                 match progHead with
                 | Push x -> aux progTail (x :: acc)
                 | Add ->
+                    if acc.Length < 2 then failwith "empty stack"
                     let p1' = acc[0]
                     let p2' = acc[1]
                     let evaluation = p1' + p2' 
                     let _, newAcc = List.splitAt 2 acc
                     aux progTail (evaluation :: newAcc)
                 | Mult ->
+                    if acc.Length < 2 then failwith "empty stack"
                     let p1' = acc[0]
                     let p2' = acc[1]
                     let evaluation = p1' * p2' 
