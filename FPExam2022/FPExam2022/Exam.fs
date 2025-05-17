@@ -279,34 +279,20 @@
 (* Question 3.4 *)
     let parInit (f : int -> int -> int) (rows : int) (cols : int) : matrix =
         // Initialize an empty matrix with the correct dimensions
-        let result = init (fun _ _ -> 0) rows cols
+        let matrix = init (fun _ _ -> 0) rows cols
         
-        // Create async operations for each cell using recursion
-        let rec buildAsyncOperations row col acc =
-            if row >= rows then 
-                acc  // Base case: reached the end of rows
-            elif col >= cols then 
-                buildAsyncOperations (row + 1) 0 acc  // Move to next row
-            else
-                // Create an async operation for the current cell
-                let operation = async {
-                    let value = f row col
-                    set result row col value
-                }
-                // Continue with next column
-                buildAsyncOperations row (col + 1) (operation :: acc)
-        
-        // Build the list of async operations
-        let asyncOperations = buildAsyncOperations 0 0 []
+        // Generate list of coordinates
+        let coordinates = [ for i in 0 .. rows - 1 do for j in 0 .. cols - 1 -> (i, j) ]
         
         // Run all async operations in parallel and wait for them to complete
-        asyncOperations
+        coordinates
+        |> List.map (fun (i, j) -> async { set matrix i j (f i j)})
         |> Async.Parallel
         |> Async.RunSynchronously
         |> ignore
         
         // Return the initialized matrix
-        result
+        matrix
 
 (* 4: Stack machines *)
 
