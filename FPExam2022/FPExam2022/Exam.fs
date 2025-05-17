@@ -264,7 +264,6 @@
                 let elementM1 = get m1 row i
                 let elementM2 = get m2 i col
                 aux (i + 1) (sum + elementM1 * elementM2)
-
         aux 0 0
         
     let mult (m1 : matrix) (m2 : matrix) : matrix =
@@ -322,15 +321,15 @@
                 | Add ->
                     let p1' = acc[0]
                     let p2' = acc[1]
-                    let evalutation = p1' + p2' 
+                    let evaluation = p1' + p2' 
                     let _, newAcc = List.splitAt 2 acc
-                    aux progTail (evalutation :: newAcc)
+                    aux progTail (evaluation :: newAcc)
                 | Mult ->
                     let p1' = acc[0]
                     let p2' = acc[1]
-                    let evalutation = p1' * p2' 
+                    let evaluation = p1' * p2' 
                     let _, newAcc = List.splitAt 2 acc
-                    aux progTail (evalutation :: newAcc)
+                    aux progTail (evaluation :: newAcc)
         (aux prog (emptyStack())).Head
 
 (* Question 4.3 *)

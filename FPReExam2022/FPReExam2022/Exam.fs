@@ -1,4 +1,4 @@
-﻿module Exam2022_2
+﻿module ReExam2022
 (* If you are importing this into F# interactive then comment out
    the line above and remove the comment for the line bellow.
 
@@ -32,7 +32,7 @@
             Square 0uy)
     
 (* Question 1.1 *)
-    let maxDepth _ = failwith "not implemented"
+    let maxDepth (img : grayscale)  = failwith "not implemented"
     
 (* Question 1.2 *)
     let mirror _ = failwith "not implemented"
