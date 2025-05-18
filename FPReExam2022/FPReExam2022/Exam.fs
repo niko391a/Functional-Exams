@@ -92,7 +92,8 @@
        Focus on what it does rather than how it does it.
 
     A: 
-    foo filters the given list based on the spcified predicate
+    foo filters the given list based on the specified predicate
+    ex:
     foo (fun x -> x % 2 = 0) [1; 2; 3; 4; 5;]
     val it: int list = [2; 4]
 
@@ -117,16 +118,6 @@
         
 
 (* Question 2.2 *)
-    // let rec foo f =
-    //     function
-    //     | []               -> []
-    //     | x :: xs when f x -> x :: (foo f xs)
-    //     | _ :: xs          -> foo f xs
-    //         
-    // let rec bar fs xs =
-    //     match fs with
-    //     | []       -> xs
-    //     | f :: fs' -> bar fs' (foo f xs)
     let bar2 fs xs = fs |> List.map (fun predicate -> List.filter predicate xs) 
 
 (* Question 2.3 *) 
@@ -152,9 +143,26 @@
        Keep in mind that all steps in an evaluation chain must evaluate to the same value
        ((5 + 4) * 3 --> 9 * 3 --> 27, for instance).
 
-    A: <Your answer goes here>
 
-    *)
+    A: 
+    bar is tail recursive and foo is not.
+    The reason that foo is not tail recursive is because the recursive call to foo is not the last operation performed.     
+    After each recursive call returns, the function still needs to append the x which satisfied the predicate to the result.     
+    This means that the function must save each call frame on the stack to finish the string concatenation after returning from the recursive call.     
+    In a tail-recursive function, there would be no additional work to do after the recursive call.
+
+    This can also be seen for the evaluation:
+    foo (fun x -> x % 2 = 0) [1; 2; 3; 4]
+    foo f [2; 3; 4]
+    2 :: (foo f [3; 4])
+    2 :: (foo f [4])
+    2 :: (4 :: (foo f []))
+    2 :: (4 :: ([]))
+    2 :: (4 :: [])
+    2 :: 4
+    [2; 4]
+     *)
+
 (* Question 2.5 *)
     // only implement the one that is NOT already tail recursive
     let fooTail _ = failwith "not implemented"
