@@ -54,10 +54,16 @@
 (* Question 1.4 *)
 
     let compress (img : grayscale) : grayscale =
-        let rec aux img : grayscale =
+        let rec aux img =
             match img with
             | Square x -> Square x
-            | Quad(g1, g2, g3, g4) -> 
+            | Quad (g1, g2, g3, g4) ->
+                let c1 = aux g1
+                let c2 = aux g2
+                let c3 = aux g3
+                let c4 = aux g4
+                if c1 = c2 && c2 = c3 && c3 = c4 then c1
+                else Quad(c1, c2, c3, c4)
         aux img
 
 (* 2: Code Comprehension *)
@@ -85,27 +91,54 @@
     Q: What do the functions foo and  bar do. 
        Focus on what it does rather than how it does it.
 
-    A: <Your answer goes here>
+    A: 
+    foo filters the given list based on the spcified predicate
+    foo (fun x -> x % 2 = 0) [1; 2; 3; 4; 5;]
+    val it: int list = [2; 4]
+
+    bar filters the given collection based on one or more given predicates
+    bar [(fun x -> x % 2 = 0); (fun x -> x > 3)] [1; 2; 3; 4; 5; 6]
+    val it: int list = [4; 6]
+
     
     Q: What would be appropriate names for functions 
        foo and bar?
 
-    A: <Your answer goes here>
+    A: 
+    foo would be called FilterList
+    bar would be called MultiFilterList
         
     Q: The function foo uses an underscore `_` in its third case. 
        Is this good coding practice, if so why, and if not why not?
     
-    A: <Your answer goes here>
+    A: In general if you do not need the variable that you've matched, then you simply replace it with an x, this also means that any value for x would be acceptable,
+    given that it is not used.
     *)
         
 
 (* Question 2.2 *)
-
-    let bar2 _ = failwith "not implemented"
+    // let rec foo f =
+    //     function
+    //     | []               -> []
+    //     | x :: xs when f x -> x :: (foo f xs)
+    //     | _ :: xs          -> foo f xs
+    //         
+    // let rec bar fs xs =
+    //     match fs with
+    //     | []       -> xs
+    //     | f :: fs' -> bar fs' (foo f xs)
+    let bar2 fs xs = fs |> List.map (fun predicate -> List.filter predicate xs) 
 
 (* Question 2.3 *) 
 
-    let baz _ = failwith "not implemented"
+    let baz fs xs =
+        let rec aux fs acc =
+            match fs with
+            | [] -> acc
+            | p::ps ->
+                let newAcc = foo p acc
+                aux ps newAcc
+        aux fs xs
 
 (* Question 2.4 *)
 
