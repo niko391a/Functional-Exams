@@ -163,9 +163,15 @@
     [2; 4]
      *)
 
-(* Question 2.5 *)
+(* Question 2.5 *)  
     // only implement the one that is NOT already tail recursive
-    let fooTail _ = failwith "not implemented"
+    let fooTail f xs =
+        let rec aux f xs acc =
+            match xs with
+            | []               -> []
+            | x :: xs when f x -> aux f xs (x :: acc)
+            | _ :: xs          -> foo f xs
+        aux f xs []
     let barTail _ = failwith "not implemented"
 
 
